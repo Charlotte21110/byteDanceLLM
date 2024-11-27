@@ -1,7 +1,12 @@
 import "./index.css";
 import "../../icon/font/iconfont.css";
+import { Input } from 'antd';
 
 const ChatLLM = () => {
+  const { Search } = Input;
+
+  const onSearch = (value: string) => console.log(value);
+
   return (
     <div className="chat-body">
       <div className="chat-main">
@@ -29,7 +34,15 @@ const ChatLLM = () => {
             </div>
           </div>
         </div>
-        <div className="chat-input"></div>
+        <div className="chat-input">
+          {/* <div className="chat-input-tips"></div> */}
+          <Search 
+            placeholder="input search text" 
+            onSearch={onSearch} 
+            className="chat-input-search"
+            // style={{ width: '100%' }} 
+          />
+        </div>
       </div>
     </div>
   );
