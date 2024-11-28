@@ -1,0 +1,16 @@
+
+.chat-guest {
+  padding: 5px 0;
+  overflow: hidden;
+}
+
+.chat-guest-text {
+  max-width: 70%;
+  padding: 15px;
+  float: right;
+  border-radius: 10px;
+  transition: all 0.6s ease;
+  background-color: #2F2F2F;
+  color: #fff;
+  font-size: 14px;
+}

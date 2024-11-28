@@ -106,13 +106,28 @@
     outline: 0 !important;
     /* 去掉轮廓 */
   }
+
   .ant-input-outlined {
     border-color: white;
   }
+
   .ant-btn {
     background-color: #212121;
+
     .ant-btn-icon {
       color: white;
     }
+  }
+
+  .ant-btn:hover,
+  .ant-btn:focus {
+    background-color: #212121 !important;
+    /* 按钮 hover 和 focus 时的背景色 */
+    color: white !important;
+    border-color: white !important;
+  }
+  .ant-input-group-addon:hover,
+  .ant-input-group-addon:focus {
+    border-color: white !important;
   }
 }
