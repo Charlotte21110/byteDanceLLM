@@ -10,10 +10,11 @@ const ChatLLM = () => {
   const { Search } = Input;
   const [guestContents, setGuestContents] = useState<string[]>([]);
   const [aiContents, setAIContents] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState('');
 
   const onSearch = async (value: string) => {
     setGuestContents([...guestContents, value]);
-    console.log(value);
+    setSearchValue('');
     const aiResponse = await fetchAIResponse(value);
     setAIContents([...aiContents, aiResponse]);
   };
@@ -59,6 +60,8 @@ const ChatLLM = () => {
           <Search
             placeholder="input search text"
             onSearch={onSearch}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             className="chat-input-search"
           />
         </div>

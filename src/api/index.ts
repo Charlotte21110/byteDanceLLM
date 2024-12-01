@@ -1,32 +1,43 @@
-import { CozeAPI, COZE_COM_BASE_URL, ChatStatus, RoleType } from '@coze/api';
+import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
 
 export interface Iquery {
-  query: string; // ?
+  query: string; 
 }
-// enum RoleType {
-//   User = 'User',
-//   Bot = 'Bot'
-// }
 
 const client = new CozeAPI({
-  token: 'your_pat_token', // 替换为你的 Personal Access Token
+  token: 'pat_UshPqQGJIszHVJ848mIDH3inDDbov9mlDOh7uXUtq5MjVKwKMGG3BkyZZ6ChpieG',
+  allowPersonalAccessTokenInBrowser: true,
   baseURL: COZE_COM_BASE_URL,
+  headers: new Headers({
+    'Content-Type': 'application/json', // 添加 Content-Type 头
+    'Authorization': 'Bearer pat_UshPqQGJIszHVJ848mIDH3inDDbov9mlDOh7uXUtq5MjVKwKMGG3BkyZZ6ChpieG',
+  }),
 });
 
 export const fetchAIResponse = async (input: string): Promise<string> => {
-  const response = await client.chat.createAndPoll({
-    bot_id: 'your_bot_id', // 替换为你的 bot_id
-    additional_messages: [{
-      role: RoleType.User,
-      content: input,
-      content_type: 'text',
-    }],
-  });
+  try {
+    const stream = await client.chat.stream({
+      bot_id: '7443420280162746386', // 确保替换为正确的 bot_id
+      auto_save_history: false,
+      user_id: '123',
+      additional_messages: [{
+        role: RoleType.User,
+        content: input,
+        content_type: 'text',
+      }],
+    });
 
-  if (response.chat.status === ChatStatus.COMPLETED) {
-    const aiMessage = response.messages?.find(msg => msg.role === RoleType.Bot);
-    return aiMessage ? aiMessage.content : 'No response from AI';
+    let aiResponse = '';
+
+    for await (const part of stream) {
+      if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
+        aiResponse += part.data.content; // 实时响应
+      }
+    }
+
+    return aiResponse;
+  } catch (error) {
+    console.error('Error fetching AI response:', error);
+    return 'Error fetching AI response';
   }
-
-  return 'AI response is not completed';
 };
