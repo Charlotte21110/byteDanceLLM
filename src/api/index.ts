@@ -9,7 +9,7 @@ const client = new CozeAPI({
   allowPersonalAccessTokenInBrowser: true,
   baseURL: COZE_COM_BASE_URL,
   headers: new Headers({
-    'Content-Type': 'application/json', // 添加 Content-Type 头
+    'Content-Type': 'application/json',
     'Authorization': 'Bearer pat_UshPqQGJIszHVJ848mIDH3inDDbov9mlDOh7uXUtq5MjVKwKMGG3BkyZZ6ChpieG',
   }),
 });
@@ -17,8 +17,8 @@ const client = new CozeAPI({
 export const fetchAIResponse = async (input: string): Promise<string> => {
   try {
     const stream = await client.chat.stream({
-      bot_id: '7443420280162746386', // 确保替换为正确的 bot_id
-      auto_save_history: false,
+      bot_id: '7443420280162746386', 
+      auto_save_history: true,
       user_id: '123',
       additional_messages: [{
         role: RoleType.User,
@@ -31,7 +31,7 @@ export const fetchAIResponse = async (input: string): Promise<string> => {
 
     for await (const part of stream) {
       if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
-        aiResponse += part.data.content; // 实时响应
+        aiResponse += part.data.content;
       }
     }
 
