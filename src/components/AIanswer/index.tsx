@@ -1,4 +1,5 @@
-import './index.css'
+import "./index.css";
+import ReactMarkdown from 'react-markdown';
 interface AIanswerProps {
   content: string;
 }
@@ -13,9 +14,9 @@ const AIanswer = (props: AIanswerProps) => {
         ></i>
       </div>
       <div className="chat-ai-answer">
-        {content}
+        <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </div>
-  )
-}
+  );
+};
 export default AIanswer;

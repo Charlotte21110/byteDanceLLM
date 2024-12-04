@@ -27,16 +27,13 @@ export const fetchAIResponse = async (input: string, onData: (data: string) => v
       }],
     });
 
-    // let aiResponse = '';
 
     for await (const part of stream) {
       if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
-        // aiResponse += part.data.content;
         onData(part.data.content);
       }
     }
 
-    // return aiResponse;
   } catch (error) {
     console.error('Error fetching AI response:', error);
     onData('Error fetching AI response');
