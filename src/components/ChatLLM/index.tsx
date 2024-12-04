@@ -18,18 +18,20 @@ const ChatLLM = () => {
   const [searchValue, setSearchValue] = useState('');
   const [combinedContents, setCombinedContents] = useState<Content[]>([]);
 
-  const addGuestContent = (content: string) => {
-    setGuestContents([...guestContents, { content }]);
-  };
-
-  const addAIContent = (content: string) => {
-    setAIContents([...aiContents, { content }]);
-  };
   const onSearch = async (value: string) => {
     setGuestContents(prevContents => [...prevContents, { content: value }]);
     setSearchValue('');
-    const aiResponse = await fetchAIResponse(value);
-    setAIContents(prevContents => [...prevContents, { content: aiResponse }]);
+    let aiContent = '';
+    setAIContents(prevContents => [...prevContents, { content: aiContent }]);
+
+    await fetchAIResponse(value, (data: string) => {
+      aiContent += data;
+      setAIContents(prevContents => {
+        const newContents = [...prevContents];
+        newContents[newContents.length - 1].content = aiContent;
+        return newContents;
+      })
+    })
   };
 
   useEffect(() => {

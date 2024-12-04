@@ -14,7 +14,7 @@ const client = new CozeAPI({
   }),
 });
 
-export const fetchAIResponse = async (input: string): Promise<string> => {
+export const fetchAIResponse = async (input: string, onData: (data: string) => void): Promise<void> => {
   try {
     const stream = await client.chat.stream({
       bot_id: '7443420280162746386', 
@@ -27,17 +27,18 @@ export const fetchAIResponse = async (input: string): Promise<string> => {
       }],
     });
 
-    let aiResponse = '';
+    // let aiResponse = '';
 
     for await (const part of stream) {
       if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
-        aiResponse += part.data.content;
+        // aiResponse += part.data.content;
+        onData(part.data.content);
       }
     }
 
-    return aiResponse;
+    // return aiResponse;
   } catch (error) {
     console.error('Error fetching AI response:', error);
-    return 'Error fetching AI response';
+    onData('Error fetching AI response');
   }
 };
