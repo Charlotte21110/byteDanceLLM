@@ -8,7 +8,7 @@ node 18.18.0
 
 npm install -g pnpm
 pnpm i
-npm run dev
+pnpm run dev
 ```
 # 开发
 需切换到develop分支开发，在该分支提代码，不允许直接提交到master，test分支

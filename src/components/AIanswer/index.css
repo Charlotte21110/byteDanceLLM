@@ -14,6 +14,7 @@
 
 .chat-ai-answer {
   max-width: 700px;
+  margin-left: 10px;
   padding: 15px;
   transition: all 0.6s ease;
   color: #fff;
