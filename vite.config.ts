@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { COZE_COM_BASE_URL } from '@coze/api'
 
 export default defineConfig({
   plugins: [react()],
@@ -12,5 +13,12 @@ export default defineConfig({
     hmr: {
       overlay: false, // 禁用 HMR 错误覆盖
     },
+    proxy: {
+      '/api': {
+        target: COZE_COM_BASE_URL,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
 })

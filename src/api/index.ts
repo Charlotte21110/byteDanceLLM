@@ -5,19 +5,19 @@ export interface Iquery {
 }
 
 const client = new CozeAPI({
-  token: 'pat_UshPqQGJIszHVJ848mIDH3inDDbov9mlDOh7uXUtq5MjVKwKMGG3BkyZZ6ChpieG',
+  token: 'pat_eMqLhvhdzGu3WIOqGHbKxCUAY50cjbFVcQDWZLwlMcEa2IMnnTGuxrvvc1GGHHvt',
   allowPersonalAccessTokenInBrowser: true,
-  baseURL: COZE_COM_BASE_URL,
+  baseURL: '/api',
   headers: new Headers({
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer pat_UshPqQGJIszHVJ848mIDH3inDDbov9mlDOh7uXUtq5MjVKwKMGG3BkyZZ6ChpieG',
+    'Authorization': 'Bearer pat_eMqLhvhdzGu3WIOqGHbKxCUAY50cjbFVcQDWZLwlMcEa2IMnnTGuxrvvc1GGHHvt',
   }),
 });
 
 export const fetchAIResponse = async (input: string, onData: (data: string) => void): Promise<void> => {
   try {
     const stream = await client.chat.stream({
-      bot_id: '7443420280162746386', 
+      bot_id: '7460806738728648720', 
       auto_save_history: true,
       user_id: '123',
       additional_messages: [{
