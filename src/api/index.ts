@@ -14,7 +14,12 @@ const client = new CozeAPI({
   }),
 });
 
-export const fetchAIResponse = async (input: string, onData: (data: string) => void): Promise<void> => {
+// ... existing code ...
+export const fetchAIResponse = async (
+  input: string, 
+  onData: (data: string) => void,
+  signal?: AbortSignal
+): Promise<void> => {
   try {
     const stream = await client.chat.stream({
       bot_id: '7460806738728648720', 
@@ -25,17 +30,22 @@ export const fetchAIResponse = async (input: string, onData: (data: string) => v
         content: input,
         content_type: 'text',
       }],
-    });
-
+    }, { signal });
 
     for await (const part of stream) {
+      if (signal?.aborted) {
+        break;
+      }
       if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
         onData(part.data.content);
       }
     }
-
-  } catch (error) {
-    console.error('Error fetching AI response:', error);
-    onData('Error fetching AI response');
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'AbortError') {
+      onData('\n[已停止回复]');
+    } else {
+      console.error('Error fetching AI response:', error);
+      onData('Error fetching AI response');
+    }
   }
 };

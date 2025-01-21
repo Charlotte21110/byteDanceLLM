@@ -5,8 +5,8 @@
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  /* 滚动条的宽度 */
+  width: 6px;   /* 统一为 6px */
+  height: 6px;  /* 统一为 6px */
 }
 
 ::-webkit-scrollbar-track {
@@ -29,7 +29,8 @@
 
 /* 专门针对代码块的滚动条样式 */
 pre::-webkit-scrollbar {
-  height: 6px;  /* 代码块的横向滚动条可以更细一些 */
+  width: 6px;   /* 统一为 6px */
+  height: 6px;  /* 统一为 6px */
 }
 
 pre::-webkit-scrollbar-track {
@@ -59,10 +60,11 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 .chat-content {
-  height: 80vh;
+  height: 100vh;
   overflow-y: auto;
   padding: 10px 0;
   margin-top: 10px;
+  overflow-x: auto; /* 确保横向滚动时有平滑效果 */
 }
 
 .chat-guest {
@@ -132,22 +134,26 @@ pre::-webkit-scrollbar-thumb:hover {
   }
 
   .ant-btn {
-    background-color: #212121;
+    background-color: #212121 !important;
+    color: white !important;
+    border-color: white !important;
 
     .ant-btn-icon {
       color: white;
     }
   }
 
-  .ant-btn:hover,
-  .ant-btn:focus {
-    background-color: #212121 !important;
-    /* 按钮 hover 和 focus 时的背景色 */
-    color: white !important;
-    border-color: white !important;
-  }
   .ant-input-group-addon:hover,
   .ant-input-group-addon:focus {
     border-color: white !important;
+  }
+  .stop-button {
+    
+    color: white !important;  /* 确保文字是白色 */
+    opacity: 0.9;  /* 稍微调整透明度使按钮更醒目 */
+    
+    .anticon {
+      color: white;
+    }
   }
 }
