@@ -28,7 +28,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
     }}>
       <code 
         dangerouslySetInnerHTML={{ __html: highlighted }}
-        style={{ fontFamily: 'Consolas, Monaco, monospace' }}
+        style={{ fontFamily: 'Consolas, Monaco, monospace', backgroundColor: 'black', color: '#fff' }}
       />
     </pre>
   );

@@ -20,3 +20,24 @@
   color: #fff;
   font-size: 14px;
 }
+.chat-ai-answer code {
+  background-color: #2D2D2D !important;
+  overflow: auto;
+}
+.chat-ai-answer pre {
+  background-color: #2D2D2D !important;
+  margin: 20px 0px;
+}
+.chat-ai-answer > pre {
+  display: block;
+  width: 100%!important; 
+  /* TODO: 需要优化 自适应 */
+  max-width: 600px;
+}
+.chat-ai-answer p > code {
+  color: #0099ff !important;
+
+}
+.chat-ai-answer li > code {
+  color: #0099ff !important;
+}
