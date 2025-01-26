@@ -15,10 +15,15 @@
 .chat-ai-answer {
   max-width: 700px;
   margin-left: 10px;
+  margin-top: 20px;
   padding: 15px;
   transition: all 0.6s ease;
   color: #fff;
   font-size: 14px;
+  background-color: #605f5f;
+  border-radius: 10px;
+  border: 1px solid #ffffff4b;
+  margin-bottom: 10px;
 }
 .chat-ai-answer code {
   background-color: #2D2D2D !important;

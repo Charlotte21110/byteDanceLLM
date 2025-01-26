@@ -1,4 +1,4 @@
-import { CozeAPI, ChatEventType, RoleType } from '@coze/api';
+import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
 
 export interface Iquery {
   query: string; 
@@ -17,6 +17,7 @@ const client = new CozeAPI({
 // ... existing code ...
 export const fetchAIResponse = async (
   input: string, 
+  additionalMessages: { role: string; content: string; content_type: string }[],
   onData: (data: string) => void,
   signal?: AbortSignal
 ): Promise<void> => {
@@ -25,11 +26,14 @@ export const fetchAIResponse = async (
       bot_id: '7463105894428704773',  // 改bot_id
       auto_save_history: true,
       user_id: '123',
-      additional_messages: [{
-        role: RoleType.User,
-        content: input,
-        content_type: 'text',
-      }],
+      additional_messages: [
+        ...additionalMessages,
+        {
+          role: RoleType.User,
+          content: input,
+          content_type: 'text',
+        },
+      ],
     }, { signal });
 
     for await (const part of stream) {

@@ -41,8 +41,15 @@ const ChatLLM = () => {
     setAbortController(controller);
     setIsResponding(true);
 
+    // Prepare additional messages from previous conversation
+    const additionalMessages = combinedContents.map(content => ({
+      role: content.type === 'guest' ? 'user' : 'assistant',
+      content: content.content,
+      content_type: 'text',
+    }));
+
     try {
-      await fetchAIResponse(value, (data: string) => {
+      await fetchAIResponse(value, additionalMessages, (data: string) => {
         aiContent += data;
         setAIContents(prevContents => {
           const newContents = [...prevContents];
