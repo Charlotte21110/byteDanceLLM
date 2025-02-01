@@ -1,3 +1,4 @@
+import React from 'react';
 import "./index.css";
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './CodeBlock';
@@ -25,14 +26,13 @@ const AIanswer = (props: AIanswerProps) => {
       <div className="chat-ai-answer">
         <ReactMarkdown
           components={{
-            code: ({inline, className, children }: CodeProps) => {
+            code: ({ inline, className, children }: CodeProps) => {
               if (inline) {
                 return <code className="chat-code" style={{ 
                   backgroundColor: '#f0f0f0', 
                   padding: '0.2em 0.4em',
                   borderRadius: '3px',
                   fontSize: '85%',
-                  
                 }}>{children}</code>;
               }
               const language = className ? className.replace('language-', '') : '';
