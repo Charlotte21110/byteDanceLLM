@@ -5,7 +5,7 @@ import { Input, Button } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse } from '../../api/index';
-import { SendOutlined, StopOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, StopOutlined } from '@ant-design/icons';
 
 export interface Content {
   content: string;
@@ -61,6 +61,13 @@ const ChatLLM = () => {
       setIsResponding(false);
       setAbortController(null);
     }
+
+    // 调整 textarea 高度
+    const textarea = document.querySelector('.chat-input-search') as HTMLTextAreaElement;
+    if (textarea) {
+      textarea.style.height = 'auto'; // 重置高度
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // 设置新高度，最大为 15vh
+    }
   };
 
   useEffect(() => {
@@ -103,24 +110,33 @@ const ChatLLM = () => {
           })}
         </div>
         <div className="chat-input">
-          <Search
+          <textarea
             placeholder="input search text"
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onSearch={onSearch}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              // 调整 textarea 高度
+              const textarea = e.target;
+              textarea.style.height = 'auto'; // 重置高度
+              textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // 设置新高度，最大为 15vh
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                onSearch(searchValue);
+              }
+            }}
             className="chat-input-search"
-            enterButton={
-              isResponding ? (
-                <Button className="stop-button" onClick={handleStop}>
-                  <StopOutlined />
-                </Button>
-              ) : (
-                <Button>
-                  <SendOutlined />
-                </Button>
-              )
-            }
+            rows={3}
           />
+          <Button onClick={() => onSearch(searchValue)}>
+            <ArrowUpOutlined />
+          </Button>
+          {isResponding && (
+            <Button className="stop-button" onClick={handleStop}>
+              <StopOutlined />
+            </Button>
+          )}
         </div>
       </div>
     </div>
