@@ -5,11 +5,13 @@ import { Input, Button } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse } from '../../api/index';
-import { ArrowUpOutlined, StopOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined } from '@ant-design/icons';
 
 export interface Content {
   content: string;
   type?: string;
+  duration?: number; // Added duration to measure reply time (in ms)
+  isCopied: boolean;
 }
 
 const ChatLLM = () => {
@@ -32,15 +34,19 @@ const ChatLLM = () => {
   const onSearch = async (value: string) => {
     if (!value.trim()) return;
     
-    setGuestContents(prevContents => [...prevContents, { content: value }]);
+    setGuestContents(prevContents => [...prevContents, { content: value, isCopied: false }]);
     setSearchValue('');
     let aiContent = '';
-    setAIContents(prevContents => [...prevContents, { content: aiContent }]);
+    // Add an empty AI answer entry (will be updated with streamed content)
+    setAIContents(prevContents => [...prevContents, { content: aiContent, isCopied: false }]);
     
     const controller = new AbortController();
     setAbortController(controller);
     setIsResponding(true);
 
+    // Record start time for timing the AI reply
+    const startTime = Date.now();
+    
     // Prepare additional messages from previous conversation
     const additionalMessages = combinedContents.map(content => ({
       role: content.type === 'guest' ? 'user' : 'assistant',
@@ -60,24 +66,58 @@ const ChatLLM = () => {
     } finally {
       setIsResponding(false);
       setAbortController(null);
+      // Compute the reply duration (in milliseconds)
+      const answerDuration = Date.now() - startTime;
+      // Update the last AI answer with the duration so AIanswer can display it
+      setAIContents(prevContents => {
+        const newContents = [...prevContents];
+        if (newContents.length > 0) {
+          newContents[newContents.length - 1] = { 
+            ...newContents[newContents.length - 1], 
+            duration: answerDuration,
+            isCopied: false
+          };
+        }
+        return newContents;
+      });
     }
 
-    // 调整 textarea 高度
+    // Adjust textarea height
     const textarea = document.querySelector('.chat-input-search') as HTMLTextAreaElement;
     if (textarea) {
-      textarea.style.height = 'auto'; // 重置高度
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // 设置新高度，最大为 15vh
+      textarea.style.height = 'auto'; // Reset height
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // New height (max 15vh)
     }
+  };
+
+  const handleCopy = (index: number, content: string) => {
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        setCombinedContents(prevContents => {
+          const newContents = [...prevContents];
+          newContents[index] = { ...newContents[index], isCopied: true };
+          return newContents;
+        });
+        setTimeout(() => {
+          setCombinedContents(prevContents => {
+            const newContents = [...prevContents];
+            newContents[index] = { ...newContents[index], isCopied: false };
+            return newContents;
+          });
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error("Copy failed:", err);
+      });
   };
 
   useEffect(() => {
     const combined: Content[] = [];
     for (let i = 0; i < Math.max(guestContents.length, aiContents.length); i++) {
       if (guestContents[i]) {
-        combined.push({ ...guestContents[i], type: 'guest'})
+        combined.push({ ...guestContents[i], type: 'guest' });
       }
-      if (aiContents[i]) combined.push({ ...aiContents[i], type: 'ai' });
-
+      if (aiContents[i]) combined.push({ ...aiContents[i], type: 'ai', isCopied: false });
     }
     console.log(combined);
     setCombinedContents(combined);
@@ -93,19 +133,39 @@ const ChatLLM = () => {
     <div className="chat-body">
       <div className="chat-main">
         <div className="chat-content" ref={chatContentRef}>
-          {/* {guestContents.map((content, index) => {
-            return (
-              <Guest key={index} content={content} />
-            );
-          })}
-          {aiContents.map((content, index) => (
-            <AIanswer key={index} content={content} />
-          ))} */}
           {combinedContents.map((content, index) => {
             if (content.type === 'guest') {
               return <Guest key={index} content={content.content} />;
             } else {
-              return <AIanswer key={index} content={content.content} />;
+              return (
+                <div key={index}>
+                  <AIanswer content={content.content} duration={content.duration} />
+                  {content.duration !== undefined && (
+                    <div
+                      className="chat-ai-footer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginTop: '8px',
+                        marginLeft: '30px',
+                        marginRight: '15px',
+                      }}
+                    >
+                      <CheckOutlined />
+                      <span style={{ marginLeft: '4px', marginRight: '16px' }}>
+                        {(content.duration / 1000).toFixed(2)}s
+                      </span>
+                      <CopyOutlined 
+                        onClick={() => handleCopy(index, content.content)} 
+                        style={{ cursor: 'pointer' }} 
+                      />
+                      <span style={{ marginLeft: '8px' }}>
+                        {content.isCopied ? "已复制" : ""}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
             }
           })}
         </div>

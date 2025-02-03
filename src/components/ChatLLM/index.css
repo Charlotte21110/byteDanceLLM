@@ -94,7 +94,7 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 .chat-ai {
-  display: flex;
+  display: block; /* 确保子元素垂直排列 */
 }
 
 .chat-ai-avator {
@@ -113,6 +113,14 @@ pre::-webkit-scrollbar-thumb:hover {
   transition: all 0.6s ease;
   color: #fff;
   font-size: 14px;
+  margin-bottom: 0; /* Ensure no margin below the answer */
+}
+
+.chat-ai-footer {
+  display: block; /* 确保 footer 在下面 */
+  margin-top: 5px;
+  margin-left: 10%;
+  color: #fff;
 }
 
 .chat-input-search {
