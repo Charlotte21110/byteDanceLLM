@@ -3,14 +3,16 @@ import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
 export interface Iquery {
   query: string; 
 }
+const token = 'pat_POGR24hSn4KRtz3KfulqDihgsJvJ3hS9Z6GP3yzd64HMPaOkmhBXVRUcUhfU7RkZ'; // 改token
+const botId =  '7467428562216828946';  // 改bot_id
 
 const client = new CozeAPI({
-  token: 'pat_VRDdcMENUkzigWSBHIiPM7l39M1TY2Ut76hRKGsOv0jlvIHzhGWY320b7w8jwHmh', // 改token
+  token: token,
   allowPersonalAccessTokenInBrowser: true,
   baseURL: '/api',
   headers: new Headers({
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer pat_VRDdcMENUkzigWSBHIiPM7l39M1TY2Ut76hRKGsOv0jlvIHzhGWY320b7w8jwHmh', // 改token
+    'Authorization': `Bearer ${token}`, 
   }),
 });
 
@@ -23,7 +25,7 @@ export const fetchAIResponse = async (
 ): Promise<void> => {
   try {
     const stream = await client.chat.stream({
-      bot_id: '7464521853370056710',  // 改bot_id
+      bot_id: botId,
       auto_save_history: true,
       user_id: '123',
       additional_messages: [
