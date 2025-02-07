@@ -4,7 +4,7 @@ import "../../icon/font/iconfont.css";
 import { Input, Button } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
-import { fetchAIResponse } from '../../api/index';
+import { fetchAIResponse, uploadFile } from '../../api/index';
 import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined, PictureOutlined, CloseOutlined } from '@ant-design/icons';
 
 export interface Content {
@@ -58,7 +58,7 @@ const ChatLLM = () => {
     const additionalMessages = combinedContents.map(content => ({
       role: content.type === 'guest' ? 'user' : 'assistant',
       content: content.content,
-      content_type: 'text',
+      content_type: 'text', // TODO: 需要改成多模态内容
     }));
 
     try {
@@ -96,7 +96,7 @@ const ChatLLM = () => {
       textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // New height (max 15vh)
     }
   };
-  const onSubmitPicture = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onSubmitPicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -104,6 +104,16 @@ const ChatLLM = () => {
         setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+      // 上传文件，包括图片在内，字节服务器保存三个月有效
+      // TODO: 提交时，如果有图片，需要将内容和图片的url一起提交
+      try {
+        const fileData = await uploadFile(file);
+        console.log('marisa 上传得到的结果', fileData);
+        const fileId = fileData.Id;
+        console.log('marisa 上传得到的文件ID', fileId);
+      } catch (error) {
+        console.error('上传文件发生错误：', error);
+      }
     }
   };
   const handleCopy = (index: number, content: string) => {

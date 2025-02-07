@@ -1,4 +1,5 @@
 import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
+import axios from 'axios';
 
 export interface Iquery {
   query: string; 
@@ -16,7 +17,6 @@ const client = new CozeAPI({
   }),
 });
 
-// ... existing code ...
 export const fetchAIResponse = async (
   input: string, 
   additionalMessages: { role: string; content: string; content_type: string }[],
@@ -33,7 +33,7 @@ export const fetchAIResponse = async (
         {
           role: RoleType.User,
           content: input,
-          content_type: 'text',
+          content_type: 'text', // TODO: 需要改成多模态内容
         },
       ],
     }, { signal });
@@ -55,3 +55,25 @@ export const fetchAIResponse = async (
     }
   }
 };
+
+export const uploadFile = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await axios.post(`${COZE_COM_BASE_URL}/v1/files/upload`, formData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    if (response.data.code === 0) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.data)
+    }
+  } catch (error) {
+    console.error('上传文件发生错误：', error);
+    throw error;
+  }
+}
