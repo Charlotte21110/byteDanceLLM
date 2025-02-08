@@ -91,7 +91,7 @@ const ChatLLM = () => {
     }
     const requestValue = fileId.current ? objectString : value;
     try {
-      await fetchAIResponse(value, additionalMessages, (data: string) => {
+      await fetchAIResponse(requestValue, additionalMessages, (data: string) => {
         aiContent += data;
         setAIContents(prevContents => {
           const newContents = [...prevContents];

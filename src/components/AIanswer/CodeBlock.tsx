@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import 'highlight.js/styles/vs2015.css';
-import hljs from 'highlight.js';
-import 'highlight.js/lib/languages/javascript';
-import 'highlight.js/lib/languages/typescript';
-import 'highlight.js/lib/languages/python';
-import 'highlight.js/lib/languages/java';
-import 'highlight.js/lib/languages/cpp';
-import 'highlight.js/lib/languages/css';
-import 'highlight.js/lib/languages/xml';
-import 'highlight.js/lib/languages/sql';
+import hljs from '../../utils/highlightConfig';
 
 interface CodeBlockProps {
   language: string;
