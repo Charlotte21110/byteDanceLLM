@@ -77,8 +77,7 @@ const ChatLLM = () => {
     const additionalMessages = combinedContents.map(content => ({
       role: content.type === 'guest' ? 'user' : 'assistant',
       content: content.content,
-      // content_type: content.fileId ? 'object_string' : 'text',
-      content_type: 'text', 
+      content_type: content.fileId ? 'object_string' : 'text',
     }));
     let objectString = '';
     if (fileId.current) {
@@ -139,7 +138,7 @@ const ChatLLM = () => {
       try {
         setIsUploading(true);
         const fileData = await uploadFile(file);
-        fileId.current = fileData.id; // TODO: 需要将图片的url和内容一起提交
+        fileId.current = fileData.id;
         message.success('图片上传成功！');
         setIsUploading(false);
         setMessageType('image');
