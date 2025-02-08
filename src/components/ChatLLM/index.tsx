@@ -177,17 +177,27 @@ const ChatLLM = () => {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
   }, [combinedContents]);
-  // 当 combinedContents 变化时自动保存到当前对话
+  // 改造后的历史同步逻辑，将当前对话实时自动保存到 History 中
   useEffect(() => {
-    if (selectedHistoryIndex !== null) {
-      setHistory(prevHistory => {
+    if (combinedContents.length === 0) return; // 对话为空时不进行更新
+
+    setHistory((prevHistory) => {
+      if (selectedHistoryIndex !== null) {
+        // 对话已存在于历史中，更新该历史项
         const newHistory = [...prevHistory];
         newHistory[selectedHistoryIndex] = combinedContents;
-        localStorage.setItem('chatHistory', JSON.stringify(newHistory)); // 同步到 LocalStorage
+        localStorage.setItem('chatHistory', JSON.stringify(newHistory));
         return newHistory;
-      });
-    }
-  }, [combinedContents, selectedHistoryIndex]);
+      } else {
+        // 当前对话为新对话，直接添加到历史中
+        const newHistory = [...prevHistory, combinedContents];
+        localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+        // 将新添加的对话标记为当前对话，后续变更会覆盖这个历史项
+        setSelectedHistoryIndex(newHistory.length - 1);
+        return newHistory;
+      }
+    });
+  }, [combinedContents]);
 
   const restoreChatContent = (restoredContent: Content[], index: number) => {
     setGuestContents(restoredContent.filter(item => item.type === 'guest'));
