@@ -132,13 +132,10 @@ pre::-webkit-scrollbar-thumb:hover {
   height: auto; /* 高度自动调整 */
   resize: none; /* 禁止调整大小 */
   outline: none; /* 去除聚焦时的轮廓 */
-  margin-bottom: 3vh;
+  margin-bottom: 2vh;
 }
 
 .chat-input button {
-  position: absolute; /* 绝对定位发送按钮 */
-  bottom: 5px; /* 距离底部的距离 */
-  right: 5px; /* 距离右侧的距离 */
   width: 30px; /* 调整按钮宽度 */
   height: 30px; /* 调整按钮高度 */
   border-radius: 50%; /* 设置为圆形 */
@@ -149,4 +146,45 @@ pre::-webkit-scrollbar-thumb:hover {
   color: white; /* 可选：设置字体颜色 */
   border: none; /* 去除边框 */
   cursor: pointer; /* 鼠标悬停时显示为指针 */
+}
+
+.chat-input-button {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.image-preview {
+  position: relative;
+  width: 120px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f5f5f5;
+  margin-bottom: 8px;
+}
+
+.image-preview img {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: contain;
+}
+
+.clear-image {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  border-radius: 50%;
+  padding: 4px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.guest-image {
+  margin: 8px 30px;
+}
+
+.guest-image img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 4px;
 }

@@ -4,8 +4,8 @@ import "../../icon/font/iconfont.css";
 import { Input, Button, Layout } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
-import { fetchAIResponse } from '../../api/index';
-import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined,MessageOutlined } from '@ant-design/icons';
+import { fetchAIResponse, uploadFile } from '../../api/index';
+import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined,MessageOutlined, PictureOutlined, CloseOutlined } from '@ant-design/icons';
 import HistorySidebar from '../Sidebar';
 
 const { Sider, Content } = Layout;
@@ -15,6 +15,7 @@ export interface Content {
   type?: string;
   duration?: number; // Added duration to measure reply time (in ms)
   isCopied: boolean;
+  image?: string; 
 }
 
 const ChatLLM = () => {
@@ -38,6 +39,7 @@ const ChatLLM = () => {
   });
   
   const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const handleStop = () => {
     if (abortController) {
@@ -47,26 +49,31 @@ const ChatLLM = () => {
   };
 
   const onSearch = async (value: string) => {
-    if (!value.trim()) return;
-    
-    setGuestContents(prevContents => [...prevContents, { content: value, isCopied: false }]);
+    if (!value.trim() && !previewImage) return;
+
+    setGuestContents(prevContents => [...prevContents, { 
+      content: value, 
+      isCopied: false,
+      image: previewImage || undefined 
+    }]);
     setSearchValue('');
+    setPreviewImage(null); // 清除预览图片
     let aiContent = '';
     // Add an empty AI answer entry (will be updated with streamed content)
     setAIContents(prevContents => [...prevContents, { content: aiContent, isCopied: false }]);
-    
+
     const controller = new AbortController();
     setAbortController(controller);
     setIsResponding(true);
 
     // Record start time for timing the AI reply
     const startTime = Date.now();
-    
+
     // Prepare additional messages from previous conversation
     const additionalMessages = combinedContents.map(content => ({
       role: content.type === 'guest' ? 'user' : 'assistant',
       content: content.content,
-      content_type: 'text',
+      content_type: 'text', // TODO: 需要改成多模态内容
     }));
 
     try {
@@ -87,8 +94,8 @@ const ChatLLM = () => {
       setAIContents(prevContents => {
         const newContents = [...prevContents];
         if (newContents.length > 0) {
-          newContents[newContents.length - 1] = { 
-            ...newContents[newContents.length - 1], 
+          newContents[newContents.length - 1] = {
+            ...newContents[newContents.length - 1],
             duration: answerDuration,
             isCopied: false
           };
@@ -104,7 +111,26 @@ const ChatLLM = () => {
       textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // New height (max 15vh)
     }
   };
-
+  const onSubmitPicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      // 上传文件，包括图片在内，字节服务器保存三个月有效
+      // TODO: 提交时，如果有图片，需要将内容和图片的url一起提交
+      try {
+        const fileData = await uploadFile(file);
+        console.log('marisa 上传得到的结果', fileData);
+        const fileId = fileData.Id;
+        console.log('marisa 上传得到的文件ID', fileId);
+      } catch (error) {
+        console.error('上传文件发生错误：', error);
+      }
+    }
+  };
   const handleCopy = (index: number, content: string) => {
     navigator.clipboard.writeText(content)
       .then(() => {
@@ -124,6 +150,14 @@ const ChatLLM = () => {
       .catch((err) => {
         console.error("Copy failed:", err);
       });
+  };
+
+  const clearImage = () => {
+    setPreviewImage(null);
+    const input = document.getElementById('file-input') as HTMLInputElement;
+    if (input) {
+      input.value = '';
+    }
   };
 
   useEffect(() => {
@@ -211,7 +245,16 @@ const ChatLLM = () => {
               <div className="chat-content" ref={chatContentRef}>
                 {combinedContents.map((content, index) => {
                   if (content.type === 'guest') {
-                    return <Guest key={index} content={content.content} />;
+                    return (
+                <div key={index}>
+                  <Guest content={content.content} />
+                  {content.image && (
+                    <div className="guest-image">
+                      <img src={content.image} alt="uploaded" />
+                    </div>
+                  )}
+                </div>
+              );
                   } else {
                     return (
                       <div key={index}>
@@ -231,9 +274,9 @@ const ChatLLM = () => {
                             <span style={{ marginLeft: '4px', marginRight: '16px' }}>
                               {(content.duration / 1000).toFixed(2)}s
                             </span>
-                            <CopyOutlined 
-                              onClick={() => handleCopy(index, content.content)} 
-                              style={{ cursor: 'pointer' }} 
+                            <CopyOutlined
+                              onClick={() => handleCopy(index, content.content)}
+                              style={{ cursor: 'pointer' }}
                             />
                             <span style={{ marginLeft: '8px' }}>
                               {content.isCopied ? "已复制" : ""}
@@ -246,7 +289,18 @@ const ChatLLM = () => {
                 })}
               </div>
               <div className="chat-input">
-                <textarea
+                {previewImage && (
+            <div className="image-preview">
+              <img src={previewImage} alt="preview" />
+              <Button 
+                className="clear-image" 
+                icon={<CloseOutlined />} 
+                size="small"
+                onClick={clearImage}
+              />
+            </div>
+          )}
+          <textarea
                   placeholder="input search text"
                   value={searchValue}
                   onChange={(e) => {
@@ -265,13 +319,25 @@ const ChatLLM = () => {
                   className="chat-input-search"
                   rows={3}
                 />
-                <Button onClick={() => onSearch(searchValue)}>
-                  <ArrowUpOutlined />
-                </Button>
+          <div className="chat-input-button">
+            <Button onClick={() => document.getElementById('file-input')?.click()}>
+              <PictureOutlined />
+            </Button>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onSubmitPicture}
+              style={{ display: 'none' }}
+              id="file-input"
+            />
+                  <Button onClick={() => onSearch(searchValue)}>
+                    <ArrowUpOutlined />
+                  </Button>
                 <Button onClick={onNewConversation} style={{ position: 'absolute', left: '5px', bottom: '5px' }}>
                   <MessageOutlined />
                 </Button>
-                {isResponding && (
+                </div>
+          {isResponding && (
                   <Button className="stop-button" onClick={handleStop}>
                     <StopOutlined />
                   </Button>
