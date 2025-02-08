@@ -1,12 +1,12 @@
-import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
+import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType, ContentType } from '@coze/api';
 import axios from 'axios';
 import { AdditionalMessage } from '../types/additionalMessage';
 
 export interface Iquery {
   query: string; 
 }
-const token = 'pat_7tXvKZGD1qMm4tLBszbR3Lh8h9l43lvQTbLp4INC41JqsaSkDCY8XVjFPOhbSsZd'; // 改token
-const botId =  '7468952453728239624';  // 改bot_id 
+const token = import.meta.env?.VITE_TOKEN || window.__RUNTIME_CONFIG__?.REACT_APP_TOKEN || '';
+const botId = import.meta.env?.VITE_BOT_ID || window.__RUNTIME_CONFIG__?.REACT_APP_BOT_ID || '';
 
 const client = new CozeAPI({
   token: token,
@@ -31,28 +31,28 @@ export const fetchAIResponse = async (
   }
   const contentType = contentTypeMap[messageType] || 'text';
   try {
-    // const stream = await client.chat.stream({
-    //   bot_id: botId,
-    //   auto_save_history: true,
-    //   user_id: '123',
-    //   additional_messages: [
-    //     ...additionalMessages,
-    //     {
-    //       role: RoleType.User,
-    //       content: input,
-    //       content_type: contentType,
-    //     },
-    //   ],
-    // }, { signal });
+    const stream = await client.chat.stream({
+      bot_id: botId,
+      auto_save_history: true,
+      user_id: '123',
+      additional_messages: [
+        ...additionalMessages,
+        {
+          role: RoleType.User,
+          content: input,
+          content_type: contentType as ContentType,
+        },
+      ],
+    }, { signal });
 
-    // for await (const part of stream) {
-    //   if (signal?.aborted) {
-    //     break;
-    //   }
-    //   if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
-    //     onData(part.data.content);
-    //   }
-    // }
+    for await (const part of stream) {
+      if (signal?.aborted) {
+        break;
+      }
+      if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
+        onData(part.data.content);
+      }
+    }
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'AbortError') {
       onData('\n[已停止回复]');
