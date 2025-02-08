@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
 import "./index.css";
 import "../../icon/font/iconfont.css";
-import { Input, Button } from 'antd';
+import { Input, Button, Layout } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse } from '../../api/index';
-import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined,MessageOutlined } from '@ant-design/icons';
+import HistorySidebar from '../Sidebar';
+
+const { Sider, Content } = Layout;
 
 export interface Content {
   content: string;
@@ -23,6 +26,18 @@ const ChatLLM = () => {
   const [isResponding, setIsResponding] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
+  // 修改 history 类型为二维数组
+  const [history, setHistory] = useState<Content[][]>(() => {
+    const savedHistory = localStorage.getItem('chatHistory');
+    if (savedHistory) {
+      const parsed = JSON.parse(savedHistory);
+      // 兼容旧数据结构（一维数组转二维）
+      return Array.isArray(parsed[0]) ? parsed : [parsed];
+    }
+    return [];
+  });
+  
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
 
   const handleStop = () => {
     if (abortController) {
@@ -128,78 +143,145 @@ const ChatLLM = () => {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
   }, [combinedContents]);
+  // 当 combinedContents 变化时自动保存到当前对话
+  useEffect(() => {
+    if (selectedHistoryIndex !== null) {
+      setHistory(prevHistory => {
+        const newHistory = [...prevHistory];
+        newHistory[selectedHistoryIndex] = combinedContents;
+        localStorage.setItem('chatHistory', JSON.stringify(newHistory)); // 同步到 LocalStorage
+        return newHistory;
+      });
+    }
+  }, [combinedContents, selectedHistoryIndex]);
+
+  const restoreChatContent = (restoredContent: Content[], index: number) => {
+    setGuestContents(restoredContent.filter(item => item.type === 'guest'));
+    setAIContents(restoredContent.filter(item => item.type === 'ai'));
+    setSelectedHistoryIndex(index); // 标记当前正在编辑的对话
+  };
+
+  const updateHistory = (updatedHistory: Content[][]) => {
+    setHistory(updatedHistory);
+    localStorage.setItem('chatHistory', JSON.stringify(updatedHistory)); // 更新本地存储
+  };
+  const saveCurrentConversation = () => {
+    // 注释或调整此判断以允许保存空对话
+    // if (combinedContents.length === 0) return;
+    
+    setHistory(prev => {
+      const newHistory = selectedHistoryIndex !== null
+        ? prev.map((conv, i) => i === selectedHistoryIndex ? combinedContents : conv)
+        : [...prev, combinedContents];
+      
+      localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+      return newHistory;
+    });
+  
+    // 重置对话状态
+    setGuestContents([]);
+    setAIContents([]);
+    setCombinedContents([]);
+    setSelectedHistoryIndex(null);
+  };
+
+  const onNewConversation = () => {
+    // 保存当前对话到历史记录
+    saveCurrentConversation();
+    // 清空输入框和相关状态以开始新对话
+    setSearchValue('');
+    
+  };
+  
 
   return (
-    <div className="chat-body">
-      <div className="chat-main">
-        <div className="chat-content" ref={chatContentRef}>
-          {combinedContents.map((content, index) => {
-            if (content.type === 'guest') {
-              return <Guest key={index} content={content.content} />;
-            } else {
-              return (
-                <div key={index}>
-                  <AIanswer content={content.content} duration={content.duration} />
-                  {content.duration !== undefined && (
-                    <div
-                      className="chat-ai-footer"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginTop: '8px',
-                        marginLeft: '30px',
-                        marginRight: '15px',
-                      }}
-                    >
-                      <CheckOutlined />
-                      <span style={{ marginLeft: '4px', marginRight: '16px' }}>
-                        {(content.duration / 1000).toFixed(2)}s
-                      </span>
-                      <CopyOutlined 
-                        onClick={() => handleCopy(index, content.content)} 
-                        style={{ cursor: 'pointer' }} 
-                      />
-                      <span style={{ marginLeft: '8px' }}>
-                        {content.isCopied ? "已复制" : ""}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-          })}
-        </div>
-        <div className="chat-input">
-          <textarea
-            placeholder="input search text"
-            value={searchValue}
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-              // 调整 textarea 高度
-              const textarea = e.target;
-              textarea.style.height = 'auto'; // 重置高度
-              textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // 设置新高度，最大为 15vh
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                onSearch(searchValue);
-              }
-            }}
-            className="chat-input-search"
-            rows={3}
-          />
-          <Button onClick={() => onSearch(searchValue)}>
-            <ArrowUpOutlined />
-          </Button>
-          {isResponding && (
-            <Button className="stop-button" onClick={handleStop}>
-              <StopOutlined />
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
+    <Layout style={{ height: '100vh' }}>
+      <Sider width={300} style={{ background: '#212121' }}>
+        <HistorySidebar
+          history={history}
+          setSelectedHistoryIndex={setSelectedHistoryIndex}
+          restoreChatContent={restoreChatContent}
+          updateHistory={updateHistory} // 传递更新历史记录的函数
+        />
+      </Sider>
+      <Layout>
+        <Content>
+          <div className="chat-body">
+            <div className="chat-main">
+              <div className="chat-content" ref={chatContentRef}>
+                {combinedContents.map((content, index) => {
+                  if (content.type === 'guest') {
+                    return <Guest key={index} content={content.content} />;
+                  } else {
+                    return (
+                      <div key={index}>
+                        <AIanswer content={content.content} duration={content.duration} />
+                        {content.duration !== undefined && (
+                          <div
+                            className="chat-ai-footer"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              marginTop: '8px',
+                              marginLeft: '30px',
+                              marginRight: '15px',
+                            }}
+                          >
+                            <CheckOutlined />
+                            <span style={{ marginLeft: '4px', marginRight: '16px' }}>
+                              {(content.duration / 1000).toFixed(2)}s
+                            </span>
+                            <CopyOutlined 
+                              onClick={() => handleCopy(index, content.content)} 
+                              style={{ cursor: 'pointer' }} 
+                            />
+                            <span style={{ marginLeft: '8px' }}>
+                              {content.isCopied ? "已复制" : ""}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+              <div className="chat-input">
+                <textarea
+                  placeholder="input search text"
+                  value={searchValue}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    // 调整 textarea 高度
+                    const textarea = e.target;
+                    textarea.style.height = 'auto'; // 重置高度
+                    textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // 设置新高度，最大为 15vh
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      onSearch(searchValue);
+                    }
+                  }}
+                  className="chat-input-search"
+                  rows={3}
+                />
+                <Button onClick={() => onSearch(searchValue)}>
+                  <ArrowUpOutlined />
+                </Button>
+                <Button onClick={onNewConversation} style={{ position: 'absolute', left: '5px', bottom: '5px' }}>
+                  <MessageOutlined />
+                </Button>
+                {isResponding && (
+                  <Button className="stop-button" onClick={handleStop}>
+                    <StopOutlined />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
 

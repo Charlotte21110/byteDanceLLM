@@ -1,0 +1,29 @@
+/* Sidebar styles */
+.sidebar {
+  background: #212121; /* Sidebar background color */
+  width: 300px; /* Sidebar width */
+  /* 其他与 Sidebar 相关的样式 */
+}
+
+.sidebar-container {
+  padding: 10px;
+  color: #fff;
+}
+
+.history-item {
+  margin: 30px;
+  cursor: pointer;
+  border:  solid #fff; 
+  border-radius: 5px; 
+}
+
+.user-input {
+   /* 添加圆角效果 */
+  transition: background-color 0.3s; /* 添加过渡效果 */
+}
+
+.user-input:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* 添加悬停效果 */
+}
+
+
