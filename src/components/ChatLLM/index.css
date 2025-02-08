@@ -193,3 +193,40 @@ pre::-webkit-scrollbar-thumb:hover {
   justify-content: flex-end;
   gap: 10px;
 }
+
+.upload-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #1890ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.guest-message {
+  margin-bottom: 20px;
+}
+
+.guest-image-container {
+  margin: 10px 30px;
+  max-width: 300px;
+}
+
+.guest-uploaded-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

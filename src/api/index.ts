@@ -1,11 +1,12 @@
 import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
 import axios from 'axios';
+import { AdditionalMessage } from '../types/additionalMessage';
 
 export interface Iquery {
   query: string; 
 }
-const token = 'pat_POGR24hSn4KRtz3KfulqDihgsJvJ3hS9Z6GP3yzd64HMPaOkmhBXVRUcUhfU7RkZ'; // 改token
-const botId =  '7467428562216828946';  // 改bot_id
+const token = 'pat_7tXvKZGD1qMm4tLBszbR3Lh8h9l43lvQTbLp4INC41JqsaSkDCY8XVjFPOhbSsZd'; // 改token
+const botId =  '7468952453728239624';  // 改bot_id 
 
 const client = new CozeAPI({
   token: token,
@@ -16,36 +17,42 @@ const client = new CozeAPI({
     'Authorization': `Bearer ${token}`, 
   }),
 });
-
 export const fetchAIResponse = async (
   input: string, 
-  additionalMessages: { role: string; content: string; content_type: string }[],
+  additionalMessages: AdditionalMessage[],
   onData: (data: string) => void,
-  signal?: AbortSignal
+  messageType: string,
+  signal?: AbortSignal,
 ): Promise<void> => {
+  console.log('marisa additionalMessages:', additionalMessages, 'input:', input, 'messageType:', messageType);
+  const contentTypeMap: { [key: string] : string} = {
+    text: 'text',
+    image: 'object_string',
+  }
+  const contentType = contentTypeMap[messageType] || 'text';
   try {
-    const stream = await client.chat.stream({
-      bot_id: botId,
-      auto_save_history: true,
-      user_id: '123',
-      additional_messages: [
-        ...additionalMessages,
-        {
-          role: RoleType.User,
-          content: input,
-          content_type: 'text', // TODO: 需要改成多模态内容
-        },
-      ],
-    }, { signal });
+    // const stream = await client.chat.stream({
+    //   bot_id: botId,
+    //   auto_save_history: true,
+    //   user_id: '123',
+    //   additional_messages: [
+    //     ...additionalMessages,
+    //     {
+    //       role: RoleType.User,
+    //       content: input,
+    //       content_type: contentType,
+    //     },
+    //   ],
+    // }, { signal });
 
-    for await (const part of stream) {
-      if (signal?.aborted) {
-        break;
-      }
-      if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
-        onData(part.data.content);
-      }
-    }
+    // for await (const part of stream) {
+    //   if (signal?.aborted) {
+    //     break;
+    //   }
+    //   if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
+    //     onData(part.data.content);
+    //   }
+    // }
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'AbortError') {
       onData('\n[已停止回复]');

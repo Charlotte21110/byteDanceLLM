@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import "./index.css";
 import "../../icon/font/iconfont.css";
-import { Input, Button, Layout } from 'antd';
+import { Input, Button, Layout, message } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse, uploadFile } from '../../api/index';
@@ -16,10 +16,10 @@ export interface Content {
   duration?: number; // Added duration to measure reply time (in ms)
   isCopied: boolean;
   image?: string; 
+  fileId?: string; 
 }
 
 const ChatLLM = () => {
-  const { Search } = Input;
   const [guestContents, setGuestContents] = useState<Content[]>([]);
   const [aiContents, setAIContents] = useState<Content[]>([]);
   const [searchValue, setSearchValue] = useState('');
@@ -27,6 +27,9 @@ const ChatLLM = () => {
   const [isResponding, setIsResponding] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [messageType, setMessageType] = useState('text');
+  const fileId = useRef<string | null>(null);
   // 修改 history 类型为二维数组
   const [history, setHistory] = useState<Content[][]>(() => {
     const savedHistory = localStorage.getItem('chatHistory');
@@ -57,7 +60,8 @@ const ChatLLM = () => {
       image: previewImage || undefined 
     }]);
     setSearchValue('');
-    setPreviewImage(null); // 清除预览图片
+    setPreviewImage(null);
+    
     let aiContent = '';
     // Add an empty AI answer entry (will be updated with streamed content)
     setAIContents(prevContents => [...prevContents, { content: aiContent, isCopied: false }]);
@@ -73,9 +77,19 @@ const ChatLLM = () => {
     const additionalMessages = combinedContents.map(content => ({
       role: content.type === 'guest' ? 'user' : 'assistant',
       content: content.content,
-      content_type: 'text', // TODO: 需要改成多模态内容
+      // content_type: content.fileId ? 'object_string' : 'text',
+      content_type: 'text', 
     }));
-
+    let objectString = '';
+    if (fileId.current) {
+      objectString = JSON.stringify({
+        type: messageType,
+        text: value,
+        file_id: fileId.current,
+        // 没有file_url
+      });
+    }
+    const requestValue = fileId.current ? objectString : value;
     try {
       await fetchAIResponse(value, additionalMessages, (data: string) => {
         aiContent += data;
@@ -84,7 +98,7 @@ const ChatLLM = () => {
           newContents[newContents.length - 1].content = aiContent;
           return newContents;
         });
-      }, controller.signal);
+      }, messageType, controller.signal);
     } finally {
       setIsResponding(false);
       setAbortController(null);
@@ -110,6 +124,8 @@ const ChatLLM = () => {
       textarea.style.height = 'auto'; // Reset height
       textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // New height (max 15vh)
     }
+    fileId.current = null; // 重置fileId
+    setMessageType('text'); // 重置消息类型
   };
   const onSubmitPicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -120,13 +136,15 @@ const ChatLLM = () => {
       };
       reader.readAsDataURL(file);
       // 上传文件，包括图片在内，字节服务器保存三个月有效
-      // TODO: 提交时，如果有图片，需要将内容和图片的url一起提交
       try {
+        setIsUploading(true);
         const fileData = await uploadFile(file);
-        console.log('marisa 上传得到的结果', fileData);
-        const fileId = fileData.Id;
-        console.log('marisa 上传得到的文件ID', fileId);
+        fileId.current = fileData.id; // TODO: 需要将图片的url和内容一起提交
+        message.success('图片上传成功！');
+        setIsUploading(false);
+        setMessageType('image');
       } catch (error) {
+        message.error('图片上传失败，请重试');
         console.error('上传文件发生错误：', error);
       }
     }
@@ -158,6 +176,7 @@ const ChatLLM = () => {
     if (input) {
       input.value = '';
     }
+    setMessageType('text');
   };
 
   useEffect(() => {
@@ -185,13 +204,30 @@ const ChatLLM = () => {
       if (selectedHistoryIndex !== null) {
         // 对话已存在于历史中，更新该历史项
         const newHistory = [...prevHistory];
-        newHistory[selectedHistoryIndex] = combinedContents;
-        localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+        // 在保存到 localStorage 之前移除图片数据
+        const historyToSave = combinedContents.map(content => ({
+          ...content,
+          image: content.image ? '[图片]' : undefined // 将图片数据替换为标记
+        }));
+        newHistory[selectedHistoryIndex] = historyToSave;
+        try {
+          localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+        } catch (e) {
+          console.warn('Failed to save chat history to localStorage:', e);
+        }
         return newHistory;
       } else {
         // 当前对话为新对话，直接添加到历史中
-        const newHistory = [...prevHistory, combinedContents];
-        localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+        const historyToSave = combinedContents.map(content => ({
+          ...content,
+          image: content.image ? '[图片]' : undefined
+        }));
+        const newHistory = [...prevHistory, historyToSave];
+        try {
+          localStorage.setItem('chatHistory', JSON.stringify(newHistory));
+        } catch (e) {
+          console.warn('Failed to save chat history to localStorage:', e);
+        }
         // 将新添加的对话标记为当前对话，后续变更会覆盖这个历史项
         setSelectedHistoryIndex(newHistory.length - 1);
         return newHistory;
@@ -256,15 +292,19 @@ const ChatLLM = () => {
                 {combinedContents.map((content, index) => {
                   if (content.type === 'guest') {
                     return (
-                <div key={index}>
-                  <Guest content={content.content} />
-                  {content.image && (
-                    <div className="guest-image">
-                      <img src={content.image} alt="uploaded" />
-                    </div>
-                  )}
-                </div>
-              );
+                      <div key={index} className="guest-message">
+                        <Guest content={content.content} />
+                        {content.image && (
+                          <div className="guest-image-container">
+                            <img 
+                              src={content.image} 
+                              alt="uploaded" 
+                              className="guest-uploaded-image"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
                   } else {
                     return (
                       <div key={index}>
@@ -300,17 +340,26 @@ const ChatLLM = () => {
               </div>
               <div className="chat-input">
                 {previewImage && (
-            <div className="image-preview">
-              <img src={previewImage} alt="preview" />
-              <Button 
-                className="clear-image" 
-                icon={<CloseOutlined />} 
-                size="small"
-                onClick={clearImage}
-              />
-            </div>
-          )}
-          <textarea
+                  <div className="image-preview">
+                    <img 
+                      src={previewImage} 
+                      alt="preview" 
+                      style={{ opacity: isUploading ? 0.6 : 1 }}
+                    />
+                    {isUploading && (
+                      <div className="upload-loading">
+                        <div className="loading-spinner"></div>
+                      </div>
+                    )}
+                    <Button 
+                      className="clear-image" 
+                      icon={<CloseOutlined />} 
+                      size="small"
+                      onClick={clearImage}
+                    />
+                  </div>
+                )}
+                <textarea
                   placeholder="input search text"
                   value={searchValue}
                   onChange={(e) => {
@@ -329,33 +378,33 @@ const ChatLLM = () => {
                   className="chat-input-search"
                   rows={3}
                 />
-          <div className="chat-input-button">
-            <div className="chat-input-button-left">
-              <Button onClick={onNewConversation} >
-                  <MessageOutlined />
-                </Button>
-            </div>
-            <div className="chat-input-button-right">
-              <Button onClick={() => document.getElementById('file-input')?.click()}>
-                <PictureOutlined />
-              </Button>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={onSubmitPicture}
-                style={{ display: 'none' }}
-                id="file-input"
-              />
-              <Button onClick={() => onSearch(searchValue)}>
-                <ArrowUpOutlined />
-              </Button>
-            </div>
-          </div>
-          {isResponding && (
-                  <Button className="stop-button" onClick={handleStop}>
-                    <StopOutlined />
-                  </Button>
-                )}
+                <div className="chat-input-button">
+                  <div className="chat-input-button-left">
+                    <Button onClick={onNewConversation} >
+                        <MessageOutlined />
+                      </Button>
+                  </div>
+                  <div className="chat-input-button-right">
+                    <Button onClick={() => document.getElementById('file-input')?.click()}>
+                      <PictureOutlined />
+                    </Button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={onSubmitPicture}
+                      style={{ display: 'none' }}
+                      id="file-input"
+                    />
+                    <Button onClick={() => onSearch(searchValue)}>
+                      <ArrowUpOutlined />
+                    </Button>
+                  </div>
+                </div>
+                {isResponding && (
+                        <Button className="stop-button" onClick={handleStop}>
+                          <StopOutlined />
+                        </Button>
+                      )}
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import CodeBlock from './CodeBlock';
 
 interface AIanswerProps {
   content: string;
+  duration?: number;
 }
 interface CodeProps {
   inline?: boolean;
