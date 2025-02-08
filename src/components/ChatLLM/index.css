@@ -150,8 +150,7 @@ pre::-webkit-scrollbar-thumb:hover {
 
 .chat-input-button {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
 }
 
 .image-preview {
@@ -187,4 +186,10 @@ pre::-webkit-scrollbar-thumb:hover {
   max-width: 200px;
   max-height: 200px;
   border-radius: 4px;
+}
+
+.chat-input-button-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }

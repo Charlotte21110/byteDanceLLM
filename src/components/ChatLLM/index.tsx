@@ -330,23 +330,27 @@ const ChatLLM = () => {
                   rows={3}
                 />
           <div className="chat-input-button">
-            <Button onClick={() => document.getElementById('file-input')?.click()}>
-              <PictureOutlined />
-            </Button>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={onSubmitPicture}
-              style={{ display: 'none' }}
-              id="file-input"
-            />
-                  <Button onClick={() => onSearch(searchValue)}>
-                    <ArrowUpOutlined />
-                  </Button>
-                <Button onClick={onNewConversation} style={{ position: 'absolute', left: '5px', bottom: '5px' }}>
+            <div className="chat-input-button-left">
+              <Button onClick={onNewConversation} >
                   <MessageOutlined />
                 </Button>
-                </div>
+            </div>
+            <div className="chat-input-button-right">
+              <Button onClick={() => document.getElementById('file-input')?.click()}>
+                <PictureOutlined />
+              </Button>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onSubmitPicture}
+                style={{ display: 'none' }}
+                id="file-input"
+              />
+              <Button onClick={() => onSearch(searchValue)}>
+                <ArrowUpOutlined />
+              </Button>
+            </div>
+          </div>
           {isResponding && (
                   <Button className="stop-button" onClick={handleStop}>
                     <StopOutlined />
