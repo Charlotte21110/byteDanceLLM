@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import "./index.css";
 import "../../icon/font/iconfont.css";
-import { Input, Button, Layout, message } from 'antd';
+import { Button, Layout, message } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse, uploadFile } from '../../api/index';
@@ -81,12 +81,18 @@ const ChatLLM = () => {
     }));
     let objectString = '';
     if (fileId.current) {
-      objectString = JSON.stringify({
-        type: messageType,
-        text: value,
-        file_id: fileId.current,
-        // 没有file_url
-      });
+      objectString = JSON.stringify(
+        [
+          {
+            type: 'text',
+            text: value,
+          },
+          {
+            type: messageType,
+            fileId: fileId.current,
+          },
+        ]
+      );
     }
     const requestValue = fileId.current ? objectString : value;
     try {
@@ -232,7 +238,7 @@ const ChatLLM = () => {
         return newHistory;
       }
     });
-  }, [combinedContents]);
+  }, [combinedContents, selectedHistoryIndex]);
 
   const restoreChatContent = (restoredContent: Content[], index: number) => {
     setGuestContents(restoredContent.filter(item => item.type === 'guest'));

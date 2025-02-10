@@ -24,7 +24,6 @@ export const fetchAIResponse = async (
   messageType: string,
   signal?: AbortSignal,
 ): Promise<void> => {
-  console.log('marisa additionalMessages:', additionalMessages, 'input:', input, 'messageType:', messageType);
   const contentTypeMap: { [key: string] : string} = {
     text: 'text',
     image: 'object_string',
