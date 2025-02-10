@@ -7,6 +7,7 @@ import AIanswer from '../AIanswer';
 import { fetchAIResponse, uploadFile } from '../../api/index';
 import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined,MessageOutlined, PictureOutlined, CloseOutlined } from '@ant-design/icons';
 import HistorySidebar from '../Sidebar';
+import { RoleType, ContentType } from '@coze/api';
 
 const { Sider, Content } = Layout;
 
@@ -75,9 +76,9 @@ const ChatLLM = () => {
 
     // Prepare additional messages from previous conversation
     const additionalMessages = combinedContents.map(content => ({
-      role: content.type === 'guest' ? 'user' : 'assistant',
+      role: content.type === 'guest' ? RoleType.User : RoleType.Assistant,
       content: content.content,
-      content_type: content.fileId ? 'object_string' : 'text',
+      content_type: content.fileId ? ('object_string' as ContentType) : ('text' as ContentType),
     }));
     let objectString = '';
     if (fileId.current) {

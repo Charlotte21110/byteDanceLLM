@@ -1,5 +1,7 @@
+import { RoleType, ContentType } from '@coze/api';
+
 export interface AdditionalMessage {
-    role: string;
+    role: RoleType;
     content: string;
-    content_type: string;
+    content_type: ContentType;
   }
