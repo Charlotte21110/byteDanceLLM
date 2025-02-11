@@ -11,21 +11,24 @@ const languages = [
   'css',
   'xml',
   'sql',
-  'vue', 
-  'plaintext'
+  'vue',
+  'plaintext',
 ];
 
-languages.forEach(lang => {
+languages.forEach(async (lang) => {
   try {
-    require(`highlight.js/lib/languages/${lang}`);
-  } catch (e) {
+    const module = await import(`highlight.js/lib/languages/${lang}`);
+    hljs.registerLanguage(lang, module.default);
+  } catch {
     console.warn(`Failed to load language: ${lang}`);
   }
 });
 
 try {
-  require('highlightjs-vue');
-} catch (e) {
+  import('highlightjs-vue').then((module) => {
+    hljs.registerLanguage('vue', module.default);
+  });
+} catch {
   console.warn('Vue syntax highlighting not available');
 }
 
