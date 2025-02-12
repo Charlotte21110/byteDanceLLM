@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=18.16.0"
   },
   "scripts": {
     "dev": "vite",
@@ -35,7 +35,7 @@
       "path": "./node_modules/cz-customizable"
     },
     "cz-customizable": {
-      "config": "./cz-config.js"
+      "config": "./cz-config.cjs"
     }
   },
   "dependencies": {
@@ -43,6 +43,9 @@
     "@coze/api": "^1.0.12",
     "antd": "^5.22.2",
     "axios": "^1.7.8",
+    "commitizen": "^4.3.1",
+    "cz-customizable": "^7.4.0",
+    "cz-customizable-i18n-config": "^0.0.1-alpha.2",
     "highlight.js": "^11.11.1",
     "highlightjs-vue": "^1.0.0",
     "react": "^18.3.1",
@@ -59,6 +62,7 @@
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
     "@vitejs/plugin-react": "^4.3.3",
+    "commitlint-plugin-i18n": "^0.0.1-alpha.3",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
