@@ -7,6 +7,7 @@ node 18.18.0
 ``` cmd
 
 npm install -g pnpm
+pnpm prepare // 确保husky被正确安装
 pnpm i
 pnpm run dev
 ```
@@ -26,12 +27,12 @@ git pull origin develop
 
 提交之前记得拉取最新代码，若有冲突可自行解决或群友讨论
 
-提交格式：
+提交格式：（具体看cz-config.cjs文件）
 feat: xxx (xxx为新增功能描述)
 fix: xxx (xxx为修复bug描述)
 
 ``` cmd
-git add xxx.js
-git commit -m "xxx"
-git push origin develop
+git add xxx.js // 示例添加文件
+pnpm commit // 提交
+git push origin develop // 推送到远程
 ```

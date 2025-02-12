@@ -2,20 +2,16 @@ import React from 'react';
 import './index.css';
 import { DeleteOutlined } from '@ant-design/icons';
 
+import { Content } from '../ChatLLM'; 
 
-interface Content {
-  content: string;
-  type?: string;
-}
-
-interface SidebarProps {
-  history: Content[][];  // 修改为二维数组，每个对话是一个数组
+interface HistorySidebarProps {
+  history: Content[][];
   setSelectedHistoryIndex: (index: number | null) => void;
   restoreChatContent: (content: Content[], index: number) => void;
   updateHistory: (history: Content[][]) => void;
 }
 
-const HistorySidebar: React.FC<SidebarProps> = ({ history, setSelectedHistoryIndex, restoreChatContent, updateHistory }) => {
+const HistorySidebar: React.FC<HistorySidebarProps> = ({ history,  restoreChatContent, updateHistory }) => {
   const handleDelete = (index: number) => {
     if (window.confirm('确定要删除这条对话记录吗？')) {
       // 删除指定对话（二维数组中的一项）

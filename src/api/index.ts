@@ -1,11 +1,12 @@
-import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType } from '@coze/api';
+import { CozeAPI, COZE_COM_BASE_URL, ChatEventType, RoleType, ContentType } from '@coze/api';
 import axios from 'axios';
+import { AdditionalMessage } from '../types/additionalMessage';
 
 export interface Iquery {
   query: string; 
 }
-const token = 'pat_POGR24hSn4KRtz3KfulqDihgsJvJ3hS9Z6GP3yzd64HMPaOkmhBXVRUcUhfU7RkZ'; // 改token
-const botId =  '7467428562216828946';  // 改bot_id
+const token = import.meta.env?.VITE_TOKEN || window.__RUNTIME_CONFIG__?.REACT_APP_TOKEN || '';
+const botId = import.meta.env?.VITE_BOT_ID || window.__RUNTIME_CONFIG__?.REACT_APP_BOT_ID || '';
 
 const client = new CozeAPI({
   token: token,
@@ -16,13 +17,18 @@ const client = new CozeAPI({
     'Authorization': `Bearer ${token}`, 
   }),
 });
-
 export const fetchAIResponse = async (
   input: string, 
-  additionalMessages: { role: string; content: string; content_type: string }[],
+  additionalMessages: AdditionalMessage[],
   onData: (data: string) => void,
-  signal?: AbortSignal
+  messageType: string,
+  signal?: AbortSignal,
 ): Promise<void> => {
+  const contentTypeMap: { [key: string] : string} = {
+    text: 'text',
+    image: 'object_string',
+  }
+  const contentType = contentTypeMap[messageType] || 'text';
   try {
     const stream = await client.chat.stream({
       bot_id: botId,
@@ -33,7 +39,7 @@ export const fetchAIResponse = async (
         {
           role: RoleType.User,
           content: input,
-          content_type: 'text', // TODO: 需要改成多模态内容
+          content_type: contentType as ContentType,
         },
       ],
     }, { signal });
