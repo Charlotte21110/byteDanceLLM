@@ -5,8 +5,9 @@ import { Button, Layout, message } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse, uploadFile } from '../../api/index';
-import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined,MessageOutlined, PictureOutlined, CloseOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined, MessageOutlined, PictureOutlined, CloseOutlined, BarsOutlined} from '@ant-design/icons';
 import HistorySidebar from '../Sidebar';
+import { RoleType, ContentType } from '@coze/api';
 
 const { Sider, Content } = Layout;
 
@@ -43,6 +44,7 @@ const ChatLLM = () => {
   
   const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false); // 新增状态管理侧边栏折叠
 
   const handleStop = () => {
     if (abortController) {
@@ -75,9 +77,9 @@ const ChatLLM = () => {
 
     // Prepare additional messages from previous conversation
     const additionalMessages = combinedContents.map(content => ({
-      role: content.type === 'guest' ? 'user' : 'assistant',
+      role: content.type === 'guest' ? RoleType.User : RoleType.Assistant,
       content: content.content,
-      content_type: content.fileId ? 'object_string' : 'text',
+      content_type: content.fileId ? ('object_string' as ContentType) : ('text' as ContentType),
     }));
     let objectString = '';
     if (fileId.current) {
@@ -278,16 +280,42 @@ const ChatLLM = () => {
     
   };
   
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerHeight < window.innerWidth) {
+        setCollapsed(false); 
+      } else {
+        setCollapsed(true); 
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // 初始化时检查窗口大小
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <Layout style={{ height: '100vh' }}>
-      <Sider width={300} style={{ background: '#212121' }}>
-        <HistorySidebar
-          history={history}
-          setSelectedHistoryIndex={setSelectedHistoryIndex}
-          restoreChatContent={restoreChatContent}
-          updateHistory={updateHistory} // 传递更新历史记录的函数
-        />
+      <Sider width={300} collapsed={collapsed} style={{ background: '#212121' }}>
+        <div className="sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {!collapsed && ( // 仅在未折叠时显示标题
+            <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px' }}>琪露诺的智能提问机</h2>
+          )}
+          <BarsOutlined onClick={() => setCollapsed(!collapsed)} style={{ cursor: 'pointer', fontSize: '25px', color: '#fff', marginLeft:"25px"}} />
+        </div>
+        {!collapsed && ( // 仅在未折叠时显示 sidebar-container
+          <div className="sidebar-container">
+            <HistorySidebar
+              history={history}
+              setSelectedHistoryIndex={setSelectedHistoryIndex}
+              restoreChatContent={restoreChatContent}
+              updateHistory={updateHistory}
+            />
+          </div>
+        )}
       </Sider>
       <Layout>
         <Content>

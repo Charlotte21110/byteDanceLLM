@@ -1,19 +1,17 @@
 import React from 'react';
 import './index.css';
+import { DeleteOutlined } from '@ant-design/icons';
 
-interface Content {
-  content: string;
-  type?: string;
-}
+import { Content } from '../ChatLLM'; 
 
-interface SidebarProps {
-  history: Content[][];  // 修改为二维数组，每个对话是一个数组
+interface HistorySidebarProps {
+  history: Content[][];
   setSelectedHistoryIndex: (index: number | null) => void;
   restoreChatContent: (content: Content[], index: number) => void;
   updateHistory: (history: Content[][]) => void;
 }
 
-const HistorySidebar: React.FC<SidebarProps> = ({ history, setSelectedHistoryIndex, restoreChatContent, updateHistory }) => {
+const HistorySidebar: React.FC<HistorySidebarProps> = ({ history,  restoreChatContent, updateHistory }) => {
   const handleDelete = (index: number) => {
     if (window.confirm('确定要删除这条对话记录吗？')) {
       // 删除指定对话（二维数组中的一项）
@@ -24,7 +22,7 @@ const HistorySidebar: React.FC<SidebarProps> = ({ history, setSelectedHistoryInd
 
   return (
     <div className="sidebar-container">
-      <h3>历史对话</h3>
+      <h3 className='sidebar-h'>历史对话</h3>
       {history.map((conversation, index) => {
         // 假设每个对话数组中第一条消息为 guest 消息
         const guestItem = conversation[0];
@@ -35,7 +33,9 @@ const HistorySidebar: React.FC<SidebarProps> = ({ history, setSelectedHistoryInd
             <span className="user-input" title={guestItem.content}>
               {guestItem.content.slice(0, 15)}
             </span>
-            <button onClick={(e) => { e.stopPropagation(); handleDelete(index); }}>删除</button>
+            <span onClick={(e) => { e.stopPropagation(); handleDelete(index); }} className="icon" >
+              <DeleteOutlined />
+            </span>
           </div>
         );
       })}
