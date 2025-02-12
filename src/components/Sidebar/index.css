@@ -9,21 +9,42 @@
   padding: 10px;
   color: #fff;
 }
+.sidebar-header{
+  margin-top: 20px;
+  margin-right: 20px;
+  
+}
+.sidebar-h{
+  margin: 20px;
+
+}
 
 .history-item {
-  margin: 30px;
+  margin: 10px;
   cursor: pointer;
-  border:  solid #fff; 
   border-radius: 5px; 
+  padding: 5px;
+  display: flex; /* 添加 flex 布局 */
+  justify-content: space-between; /* 内容和图标之间的间距 */
+  align-items: center; /* 垂直居中对齐 */
 }
 
 .user-input {
-   /* 添加圆角效果 */
+  margin: 10px;
   transition: background-color 0.3s; /* 添加过渡效果 */
 }
 
-.user-input:hover {
+.history-item:hover {
   background-color: rgba(255, 255, 255, 0.1); /* 添加悬停效果 */
+  border-radius: 10px;
+}
+
+.icon{
+  font-size: 15px;
+}
+.icon:hover {
+  font-size: 15px;
+  color: #ff4d4f; /* 悬停时的颜色变化 */
 }
 
 

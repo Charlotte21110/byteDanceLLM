@@ -1,5 +1,7 @@
 import React from 'react';
 import './index.css';
+import { DeleteOutlined } from '@ant-design/icons';
+
 
 interface Content {
   content: string;
@@ -24,7 +26,7 @@ const HistorySidebar: React.FC<SidebarProps> = ({ history, setSelectedHistoryInd
 
   return (
     <div className="sidebar-container">
-      <h3>历史对话</h3>
+      <h3 className='sidebar-h'>历史对话</h3>
       {history.map((conversation, index) => {
         // 假设每个对话数组中第一条消息为 guest 消息
         const guestItem = conversation[0];
@@ -35,7 +37,9 @@ const HistorySidebar: React.FC<SidebarProps> = ({ history, setSelectedHistoryInd
             <span className="user-input" title={guestItem.content}>
               {guestItem.content.slice(0, 15)}
             </span>
-            <button onClick={(e) => { e.stopPropagation(); handleDelete(index); }}>删除</button>
+            <span onClick={(e) => { e.stopPropagation(); handleDelete(index); }} className="icon" >
+              <DeleteOutlined />
+            </span>
           </div>
         );
       })}
