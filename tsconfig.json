@@ -19,6 +19,7 @@
     },
     "noEmit": true,    
     "allowImportingTsExtensions": true,
+    "types": ["jest", "@testing-library/jest-dom"]
   },
   "include": ["src", "declarations.d.ts"]
 }

@@ -21,4 +21,8 @@ export default defineConfig({
       }
     }
   },
+  test: {
+    globals: true,
+    environment: 'jsdom', // 模拟浏览器环境
+  }
 })
