@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
-import "./index.css";
-import "../../icon/font/iconfont.css";
-import { Button, Layout, message } from 'antd';
+import './index.css';
+import '../../icon/font/iconfont.css';
+import { Layout, message } from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import { fetchAIResponse, uploadFile } from '../../api/index';
-import { ArrowUpOutlined, StopOutlined, CheckOutlined, CopyOutlined, MessageOutlined, PictureOutlined, CloseOutlined, BarsOutlined} from '@ant-design/icons';
+import { CheckOutlined, CopyOutlined, BarsOutlined } from '@ant-design/icons';
 import HistorySidebar from '../Sidebar';
 import { RoleType, ContentType } from '@coze/api';
+import ChatInput from '../ChatInput';
 
 const { Sider, Content } = Layout;
 
@@ -16,8 +17,8 @@ export interface Content {
   type?: string;
   duration?: number; // Added duration to measure reply time (in ms)
   isCopied: boolean;
-  image?: string; 
-  fileId?: string; 
+  image?: string;
+  fileId?: string;
 }
 
 const ChatLLM = () => {
@@ -26,7 +27,8 @@ const ChatLLM = () => {
   const [searchValue, setSearchValue] = useState('');
   const [combinedContents, setCombinedContents] = useState<Content[]>([]);
   const [isResponding, setIsResponding] = useState(false);
-  const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [messageType, setMessageType] = useState('text');
@@ -41,8 +43,10 @@ const ChatLLM = () => {
     }
     return [];
   });
-  
-  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
+
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<
+    number | null
+  >(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(false); // 新增状态管理侧边栏折叠
 
@@ -56,17 +60,23 @@ const ChatLLM = () => {
   const onSearch = async (value: string) => {
     if (!value.trim() && !previewImage) return;
 
-    setGuestContents(prevContents => [...prevContents, { 
-      content: value, 
-      isCopied: false,
-      image: previewImage || undefined 
-    }]);
+    setGuestContents((prevContents) => [
+      ...prevContents,
+      {
+        content: value,
+        isCopied: false,
+        image: previewImage || undefined,
+      },
+    ]);
     setSearchValue('');
     setPreviewImage(null);
-    
+
     let aiContent = '';
     // Add an empty AI answer entry (will be updated with streamed content)
-    setAIContents(prevContents => [...prevContents, { content: aiContent, isCopied: false }]);
+    setAIContents((prevContents) => [
+      ...prevContents,
+      { content: aiContent, isCopied: false },
+    ]);
 
     const controller = new AbortController();
     setAbortController(controller);
@@ -76,49 +86,55 @@ const ChatLLM = () => {
     const startTime = Date.now();
 
     // Prepare additional messages from previous conversation
-    const additionalMessages = combinedContents.map(content => ({
+    const additionalMessages = combinedContents.map((content) => ({
       role: content.type === 'guest' ? RoleType.User : RoleType.Assistant,
       content: content.content,
-      content_type: content.fileId ? ('object_string' as ContentType) : ('text' as ContentType),
+      content_type: content.fileId
+        ? ('object_string' as ContentType)
+        : ('text' as ContentType),
     }));
     let objectString = '';
     if (fileId.current) {
-      objectString = JSON.stringify(
-        [
-          {
-            type: 'text',
-            text: value,
-          },
-          {
-            type: messageType,
-            fileId: fileId.current,
-          },
-        ]
-      );
+      objectString = JSON.stringify([
+        {
+          type: 'text',
+          text: value,
+        },
+        {
+          type: messageType,
+          fileId: fileId.current,
+        },
+      ]);
     }
     const requestValue = fileId.current ? objectString : value;
     try {
-      await fetchAIResponse(requestValue, additionalMessages, (data: string) => {
-        aiContent += data;
-        setAIContents(prevContents => {
-          const newContents = [...prevContents];
-          newContents[newContents.length - 1].content = aiContent;
-          return newContents;
-        });
-      }, messageType, controller.signal);
+      await fetchAIResponse(
+        requestValue,
+        additionalMessages,
+        (data: string) => {
+          aiContent += data;
+          setAIContents((prevContents) => {
+            const newContents = [...prevContents];
+            newContents[newContents.length - 1].content = aiContent;
+            return newContents;
+          });
+        },
+        messageType,
+        controller.signal
+      );
     } finally {
       setIsResponding(false);
       setAbortController(null);
       // Compute the reply duration (in milliseconds)
       const answerDuration = Date.now() - startTime;
       // Update the last AI answer with the duration so AIanswer can display it
-      setAIContents(prevContents => {
+      setAIContents((prevContents) => {
         const newContents = [...prevContents];
         if (newContents.length > 0) {
           newContents[newContents.length - 1] = {
             ...newContents[newContents.length - 1],
             duration: answerDuration,
-            isCopied: false
+            isCopied: false,
           };
         }
         return newContents;
@@ -126,15 +142,19 @@ const ChatLLM = () => {
     }
 
     // Adjust textarea height
-    const textarea = document.querySelector('.chat-input-search') as HTMLTextAreaElement;
+    const textarea = document.querySelector(
+      '.chat-input-search'
+    ) as HTMLTextAreaElement;
     if (textarea) {
       textarea.style.height = 'auto'; // Reset height
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // New height (max 15vh)
+      textarea.style.height = `${Math.min(textarea.scrollHeight, (15 * window.innerHeight) / 100)}px`; // New height (max 15vh)
     }
     fileId.current = null; // 重置fileId
     setMessageType('text'); // 重置消息类型
   };
-  const onSubmitPicture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onSubmitPicture = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -157,15 +177,16 @@ const ChatLLM = () => {
     }
   };
   const handleCopy = (index: number, content: string) => {
-    navigator.clipboard.writeText(content)
+    navigator.clipboard
+      .writeText(content)
       .then(() => {
-        setCombinedContents(prevContents => {
+        setCombinedContents((prevContents) => {
           const newContents = [...prevContents];
           newContents[index] = { ...newContents[index], isCopied: true };
           return newContents;
         });
         setTimeout(() => {
-          setCombinedContents(prevContents => {
+          setCombinedContents((prevContents) => {
             const newContents = [...prevContents];
             newContents[index] = { ...newContents[index], isCopied: false };
             return newContents;
@@ -173,7 +194,7 @@ const ChatLLM = () => {
         }, 5000);
       })
       .catch((err) => {
-        console.error("Copy failed:", err);
+        console.error('Copy failed:', err);
       });
   };
 
@@ -188,11 +209,16 @@ const ChatLLM = () => {
 
   useEffect(() => {
     const combined: Content[] = [];
-    for (let i = 0; i < Math.max(guestContents.length, aiContents.length); i++) {
+    for (
+      let i = 0;
+      i < Math.max(guestContents.length, aiContents.length);
+      i++
+    ) {
       if (guestContents[i]) {
         combined.push({ ...guestContents[i], type: 'guest' });
       }
-      if (aiContents[i]) combined.push({ ...aiContents[i], type: 'ai', isCopied: false });
+      if (aiContents[i])
+        combined.push({ ...aiContents[i], type: 'ai', isCopied: false });
     }
     console.log(combined);
     setCombinedContents(combined);
@@ -212,9 +238,9 @@ const ChatLLM = () => {
         // 对话已存在于历史中，更新该历史项
         const newHistory = [...prevHistory];
         // 在保存到 localStorage 之前移除图片数据
-        const historyToSave = combinedContents.map(content => ({
+        const historyToSave = combinedContents.map((content) => ({
           ...content,
-          image: content.image ? '[图片]' : undefined // 将图片数据替换为标记
+          image: content.image ? '[图片]' : undefined, // 将图片数据替换为标记
         }));
         newHistory[selectedHistoryIndex] = historyToSave;
         try {
@@ -225,9 +251,9 @@ const ChatLLM = () => {
         return newHistory;
       } else {
         // 当前对话为新对话，直接添加到历史中
-        const historyToSave = combinedContents.map(content => ({
+        const historyToSave = combinedContents.map((content) => ({
           ...content,
-          image: content.image ? '[图片]' : undefined
+          image: content.image ? '[图片]' : undefined,
         }));
         const newHistory = [...prevHistory, historyToSave];
         try {
@@ -243,8 +269,8 @@ const ChatLLM = () => {
   }, [combinedContents, selectedHistoryIndex]);
 
   const restoreChatContent = (restoredContent: Content[], index: number) => {
-    setGuestContents(restoredContent.filter(item => item.type === 'guest'));
-    setAIContents(restoredContent.filter(item => item.type === 'ai'));
+    setGuestContents(restoredContent.filter((item) => item.type === 'guest'));
+    setAIContents(restoredContent.filter((item) => item.type === 'ai'));
     setSelectedHistoryIndex(index); // 标记当前正在编辑的对话
   };
 
@@ -255,16 +281,19 @@ const ChatLLM = () => {
   const saveCurrentConversation = () => {
     // 注释或调整此判断以允许保存空对话
     // if (combinedContents.length === 0) return;
-    
-    setHistory(prev => {
-      const newHistory = selectedHistoryIndex !== null
-        ? prev.map((conv, i) => i === selectedHistoryIndex ? combinedContents : conv)
-        : [...prev, combinedContents];
-      
+
+    setHistory((prev) => {
+      const newHistory =
+        selectedHistoryIndex !== null
+          ? prev.map((conv, i) =>
+              i === selectedHistoryIndex ? combinedContents : conv
+            )
+          : [...prev, combinedContents];
+
       localStorage.setItem('chatHistory', JSON.stringify(newHistory));
       return newHistory;
     });
-  
+
     // 重置对话状态
     setGuestContents([]);
     setAIContents([]);
@@ -277,15 +306,14 @@ const ChatLLM = () => {
     saveCurrentConversation();
     // 清空输入框和相关状态以开始新对话
     setSearchValue('');
-    
   };
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerHeight < window.innerWidth) {
-        setCollapsed(false); 
+        setCollapsed(false);
       } else {
-        setCollapsed(true); 
+        setCollapsed(true);
       }
     };
 
@@ -299,12 +327,33 @@ const ChatLLM = () => {
 
   return (
     <Layout style={{ height: '100vh' }}>
-      <Sider width={300} collapsed={collapsed} style={{ background: '#212121' }}>
-        <div className="sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Sider
+        width={300}
+        collapsed={collapsed}
+        style={{ background: '#212121' }}
+      >
+        <div
+          className="sidebar-header"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           {!collapsed && ( // 仅在未折叠时显示标题
-            <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px' }}>琪露诺的智能提问机</h2>
+            <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px' }}>
+              琪露诺的智能提问机
+            </h2>
           )}
-          <BarsOutlined onClick={() => setCollapsed(!collapsed)} style={{ cursor: 'pointer', fontSize: '25px', color: '#fff', marginLeft:"25px"}} />
+          <BarsOutlined
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              cursor: 'pointer',
+              fontSize: '25px',
+              color: '#fff',
+              marginLeft: '25px',
+            }}
+          />
         </div>
         {!collapsed && ( // 仅在未折叠时显示 sidebar-container
           <div className="sidebar-container">
@@ -329,9 +378,9 @@ const ChatLLM = () => {
                         <Guest content={content.content} />
                         {content.image && (
                           <div className="guest-image-container">
-                            <img 
-                              src={content.image} 
-                              alt="uploaded" 
+                            <img
+                              src={content.image}
+                              alt="uploaded"
                               className="guest-uploaded-image"
                             />
                           </div>
@@ -341,7 +390,10 @@ const ChatLLM = () => {
                   } else {
                     return (
                       <div key={index}>
-                        <AIanswer content={content.content} duration={content.duration} />
+                        <AIanswer
+                          content={content.content}
+                          duration={content.duration}
+                        />
                         {content.duration !== undefined && (
                           <div
                             className="chat-ai-footer"
@@ -354,7 +406,9 @@ const ChatLLM = () => {
                             }}
                           >
                             <CheckOutlined />
-                            <span style={{ marginLeft: '4px', marginRight: '16px' }}>
+                            <span
+                              style={{ marginLeft: '4px', marginRight: '16px' }}
+                            >
                               {(content.duration / 1000).toFixed(2)}s
                             </span>
                             <CopyOutlined
@@ -362,7 +416,7 @@ const ChatLLM = () => {
                               style={{ cursor: 'pointer' }}
                             />
                             <span style={{ marginLeft: '8px' }}>
-                              {content.isCopied ? "已复制" : ""}
+                              {content.isCopied ? '已复制' : ''}
                             </span>
                           </div>
                         )}
@@ -371,74 +425,20 @@ const ChatLLM = () => {
                   }
                 })}
               </div>
-              <div className="chat-input">
-                {previewImage && (
-                  <div className="image-preview">
-                    <img 
-                      src={previewImage} 
-                      alt="preview" 
-                      style={{ opacity: isUploading ? 0.6 : 1 }}
-                    />
-                    {isUploading && (
-                      <div className="upload-loading">
-                        <div className="loading-spinner"></div>
-                      </div>
-                    )}
-                    <Button 
-                      className="clear-image" 
-                      icon={<CloseOutlined />} 
-                      size="small"
-                      onClick={clearImage}
-                    />
-                  </div>
-                )}
-                <textarea
-                  placeholder="input search text"
-                  value={searchValue}
-                  onChange={(e) => {
-                    setSearchValue(e.target.value);
-                    // 调整 textarea 高度
-                    const textarea = e.target;
-                    textarea.style.height = 'auto'; // 重置高度
-                    textarea.style.height = `${Math.min(textarea.scrollHeight, 15 * window.innerHeight / 100)}px`; // 设置新高度，最大为 15vh
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      onSearch(searchValue);
-                    }
-                  }}
-                  className="chat-input-search"
-                  rows={3}
-                />
-                <div className="chat-input-button">
-                  <div className="chat-input-button-left">
-                    <Button onClick={onNewConversation} >
-                        <MessageOutlined />
-                      </Button>
-                  </div>
-                  <div className="chat-input-button-right">
-                    <Button onClick={() => document.getElementById('file-input')?.click()}>
-                      <PictureOutlined />
-                    </Button>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={onSubmitPicture}
-                      style={{ display: 'none' }}
-                      id="file-input"
-                    />
-                    <Button onClick={() => onSearch(searchValue)}>
-                      <ArrowUpOutlined />
-                    </Button>
-                  </div>
-                </div>
-                {isResponding && (
-                        <Button className="stop-button" onClick={handleStop}>
-                          <StopOutlined />
-                        </Button>
-                      )}
-              </div>
+              <ChatInput
+                searchValue={searchValue}
+                previewImage={previewImage}
+                isUploading={isUploading}
+                isResponding={isResponding}
+                onSearchValueChange={(value) => {
+                  setSearchValue(value);
+                }}
+                onSearch={onSearch}
+                onNewConversation={onNewConversation}
+                onSubmitPicture={onSubmitPicture}
+                clearImage={clearImage}
+                handleStop={handleStop}
+              />
             </div>
           </div>
         </Content>

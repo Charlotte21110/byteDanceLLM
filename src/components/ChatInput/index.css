@@ -1,0 +1,35 @@
+/* 从原来的 ChatLLM/index.css 中复制相关样式 */
+.chat-input {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  margin-bottom: 3vh;
+  height: auto;
+  max-height: 30vh;
+}
+
+.chat-input-search {
+  color: white;
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  max-height: 30vh;
+  height: auto;
+  resize: none;
+  outline: none;
+  margin-bottom: 2vh;
+}
+
+.chat-input-button {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-input-button-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* 其他相关样式... */
