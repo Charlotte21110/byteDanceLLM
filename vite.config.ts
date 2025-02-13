@@ -4,7 +4,7 @@ import { COZE_COM_BASE_URL } from '@coze/api'
 
 export default defineConfig({
   // base: '/byteDanceLLM/',
-  base: './',
+  base: '/byteDanceLLM/',
   plugins: [react()],
   css: {
     modules: {
