@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - test
+      - feature_fix_CICD
   pull_request:
     branches:
-      - test
+      - feature_fix_CICD
 
 jobs: 
   build:
@@ -20,6 +20,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '18.18.0' 
+      
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
