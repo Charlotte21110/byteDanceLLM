@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { COZE_COM_BASE_URL } from '@coze/api'
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/byteDanceLLM/' : './',
+  base: '/byteDanceLLM/',
   plugins: [react()],
   css: {
     modules: {

@@ -19,7 +19,7 @@
     },
     "noEmit": true,    
     "allowImportingTsExtensions": true,
-    "types": ["jest", "@testing-library/jest-dom"]
+    "types": ["jest", "@testing-library/jest-dom", "node", "vite/client"]
   },
   "include": ["src", "declarations.d.ts"]
 }
