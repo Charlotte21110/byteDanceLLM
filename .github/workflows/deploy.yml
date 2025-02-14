@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - feature_fix_CICD  # 部署的分支
+      - main 
 
 jobs:
   deploy:
