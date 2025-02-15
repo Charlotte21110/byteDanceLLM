@@ -17,19 +17,25 @@ const languages = [
 
 languages.forEach(async (lang) => {
   try {
-    const module = await import(`highlight.js/lib/languages/${lang}`);
+    const module = await import(
+      /* @vite-ignore */ `highlight.js/lib/languages/${lang}`
+    );
     hljs.registerLanguage(lang, module.default);
-  } catch {
-    console.warn(`Failed to load language: ${lang}`);
+  } catch (error) {
+    console.warn(`Failed to load language: ${lang}`, error);
   }
 });
 
 try {
-  import('highlightjs-vue').then((module) => {
-    hljs.registerLanguage('vue', module.default);
-  });
-} catch {
-  console.warn('Vue syntax highlighting not available');
+  import(/* @vite-ignore */ 'highlightjs-vue')
+    .then((module) => {
+      hljs.registerLanguage('vue', module.default);
+    })
+    .catch((error) => {
+      console.warn('Vue syntax highlighting not available', error);
+    });
+} catch (error) {
+  console.warn('Vue syntax highlighting not available', error);
 }
 
 export default hljs;

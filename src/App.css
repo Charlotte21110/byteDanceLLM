@@ -1,6 +1,306 @@
-#root {
-  /* max-width: 1280px;
+/* 全局变量 - 亮色主题 */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --secondary-bg: #e6e6e6;
+  --border-color: #333333;
+  --accent-color: #1a365d;
+  --hover-color: #d1d1d1;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --input-bg: #ffffff;
+  --secondary-text: #333333;
+  --button-bg: #1a365d;
+  --button-text: #ffffff;
+  --button-hover: #2c4c7c;
+  --sidebar-bg: #f0f0f0;
+  --sidebar-text: #000000;
+  --sidebar-border: #333333;
+  --message-bg: #f5f5f5;
+}
+
+/* 全局变量 - 暗色主题 */
+[data-theme='dark'] {
+  --bg-color: #1a1b1e;
+  --text-color: #e9ecef;
+  --secondary-bg: #2c2e33;
+  --border-color: #373a40;
+  --accent-color: #4dabf7;
+  --hover-color: #373a40;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --input-bg: #2c2e33;
+  --secondary-text: #a1a1aa;
+  --button-bg: #4dabf7;
+  --button-text: #ffffff;
+  --button-hover: #3994e4;
+  --sidebar-bg: #212121;
+  --sidebar-text: #ffffff;
+  --sidebar-border: #373a40;
+  --message-bg: #2c2e33;
+}
+
+/* 全局样式 */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  font-size: 1.25rem;
+  background-color: var(--button-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  z-index: 1000;
+  color: var(--button-text);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px var(--shadow-color);
+  background-color: var(--button-hover);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* 聊天界面样式 */
+.chat-container {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center; */
+  padding: 20px;
+  background-color: var(--bg-color);
+}
+
+.chat-input {
+  background-color: var(--input-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.chat-input:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.chat-message {
+  background-color: var(--message-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 10px 0;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  color: var(--text-color);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+/* 输入框样式 */
+input,
+textarea {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.3);
+}
+
+/* Ant Design 组件覆盖 */
+.ant-layout {
+  background: var(--bg-color) !important;
+}
+
+.ant-layout-sider {
+  background: var(--sidebar-bg) !important;
+  border-right: 2px solid var(--sidebar-border) !important;
+}
+
+.ant-layout-content {
+  background: var(--bg-color) !important;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 确保文本颜色正确 */
+.chat-input-search {
+  color: var(--text-color) !important;
+  background-color: var(--input-bg) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.chat-guest-text,
+.chat-ai-answer,
+.chat-ai-footer {
+  color: var(--text-color) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+/* 强制应用文本颜色 */
+* {
+  color: var(--text-color);
+}
+
+::placeholder {
+  color: var(--secondary-text) !important;
+  opacity: 1 !important;
+}
+
+/* 侧边栏样式 */
+.ant-layout-sider {
+  background: var(--sidebar-bg) !important;
+  border-right: 2px solid var(--sidebar-border) !important;
+}
+
+.sidebar-header h2 {
+  color: var(--sidebar-text) !important;
+  font-weight: 600;
+}
+
+/* 按钮样式 */
+button {
+  background-color: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+button:hover {
+  background-color: var(--button-hover) !important;
+  opacity: 0.9;
+}
+
+/* 消息样式 */
+.chat-message {
+  background-color: var(--message-bg) !important;
+  border: 2px solid var(--border-color) !important;
+  color: var(--text-color) !important;
+}
+
+.chat-guest-text {
+  background-color: var(--message-bg) !important;
+  border: 2px solid var(--border-color) !important;
+  color: var(--text-color) !important;
+  font-weight: 600 !important;
+}
+
+/* 输入框样式 */
+.chat-input {
+  background-color: var(--input-bg) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 2px 8px var(--shadow-color) !important;
+}
+
+.chat-input-search {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.chat-input-search::placeholder {
+  color: var(--secondary-text) !important;
+  opacity: 1 !important;
+}
+
+/* 图标样式 */
+.anticon {
+  color: var(--button-text) !important;
+  font-size: 18px !important;
+}
+
+/* 时间和复制按钮样式 */
+.chat-ai-footer {
+  color: var(--text-color) !important;
+  font-weight: 500 !important;
+}
+
+.chat-ai-footer .anticon {
+  color: var(--text-color) !important;
+  margin-right: 4px;
+}
+
+/* AI 回答样式 */
+.chat-ai-answer {
+  color: var(--text-color) !important;
+  font-weight: 500 !important;
+  background-color: var(--message-bg) !important;
+  border: 2px solid var(--border-color) !important;
+  padding: 15px !important;
+  border-radius: 10px !important;
+}
+
+/* 代码块样式 */
+pre,
+code {
+  background-color: var(--secondary-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-color) !important;
 }

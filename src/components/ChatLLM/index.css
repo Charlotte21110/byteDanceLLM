@@ -5,49 +5,48 @@
 }
 
 ::-webkit-scrollbar {
-  width: 6px;   /* 统一为 6px */
-  height: 6px;  /* 统一为 6px */
+  width: 6px; /* 统一为 6px */
+  height: 6px; /* 统一为 6px */
 }
 
 ::-webkit-scrollbar-track {
-  background: #212121;
+  background: var(--secondary-bg);
   /* 滚动条轨道的背景色 */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--border-color);
   /* 滚动条的颜色 */
   border-radius: 10px;
   /* 滚动条的圆角 */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--text-color);
   /* 当鼠标悬停在滚动条上时的颜色 */
 }
 
-
 /* 专门针对代码块的滚动条样式 */
 pre::-webkit-scrollbar {
-  width: 6px;   /* 统一为 6px */
-  height: 6px;  /* 统一为 6px */
+  width: 6px; /* 统一为 6px */
+  height: 6px; /* 统一为 6px */
 }
 
 pre::-webkit-scrollbar-track {
-  background: #1E1E1E;  /* 与代码块背景色匹配 */
+  background: var(--secondary-bg);
 }
 
 pre::-webkit-scrollbar-thumb {
-  background: #555;
+  background: var(--border-color);
   border-radius: 3px;
 }
 
 pre::-webkit-scrollbar-thumb:hover {
-  background: #666;
+  background: var(--text-color);
 }
 
 .chat-body {
-  background-color: #212121;
+  background-color: var(--bg-color);
 }
 
 .chat-main {
@@ -56,7 +55,7 @@ pre::-webkit-scrollbar-thumb:hover {
   height: 100vh;
   max-width: 70%;
   margin: 0 auto;
-  background-color: #212121;
+  background-color: var(--bg-color);
 }
 
 .chat-content {
@@ -65,6 +64,7 @@ pre::-webkit-scrollbar-thumb:hover {
   padding: 10px 0;
   margin-top: 10px;
   overflow-x: auto; /* 确保横向滚动时有平滑效果 */
+  background-color: var(--bg-color);
 }
 
 .chat-guest {
@@ -78,19 +78,21 @@ pre::-webkit-scrollbar-thumb:hover {
   float: right;
   border-radius: 10px;
   transition: all 0.6s ease;
-  background-color: #2F2F2F;
-  color: #fff;
+  background-color: var(--secondary-bg);
+  color: var(--text-color);
   font-size: 14px;
 }
 
 .chat-input {
-  border: 1px solid #ccc; /* 为 chat-input 添加边框 */
-  border-radius: 10px; /* 可选：添加圆角 */
-  padding: 10px; /* 添加内边距 */
-  position: relative; /* 使发送按钮可以绝对定位 */
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
   margin-bottom: 3vh;
-  height: auto; /* 高度自动调整 */
-  max-height: 30vh; /* 设置最大高度为 15vh */
+  height: auto;
+  max-height: 30vh;
+  background-color: var(--input-bg);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .chat-ai {
@@ -104,35 +106,44 @@ pre::-webkit-scrollbar-thumb:hover {
   height: 29px;
   padding: 2px;
   border-radius: 50%;
-  border: #ffffff4b 1px solid;
+  border: 1px solid var(--border-color);
 }
 
 .chat-ai-answer {
   max-width: 700px;
   padding: 15px;
   transition: all 0.6s ease;
-  color: #fff;
+  color: var(--text-color);
   font-size: 14px;
   margin-bottom: 0; /* Ensure no margin below the answer */
+  background-color: var(--bg-color);
 }
 
 .chat-ai-footer {
   display: block; /* 确保 footer 在下面 */
   margin-top: 5px;
   margin-left: 10%;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .chat-input-search {
-  color: white; /* 字体颜色为白色 */
-  background-color: transparent; /* 背景颜色为透明 */
-  border: none; /* 去除 textarea 边框 */
-  width: 100%; /* 使 textarea 占满宽度 */
-  max-height: 30vh; /* 设置最大高度为 15vh */
-  height: auto; /* 高度自动调整 */
-  resize: none; /* 禁止调整大小 */
-  outline: none; /* 去除聚焦时的轮廓 */
+  color: var(--text-color);
+  background-color: var(--input-bg);
+  border: none;
+  width: 100%;
+  max-height: 30vh;
+  height: auto;
+  resize: none;
+  outline: none;
   margin-bottom: 2vh;
+  padding: 8px;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.chat-input-search::placeholder {
+  color: var(--secondary-text);
+  opacity: 0.8;
 }
 
 .chat-input button {
@@ -142,8 +153,8 @@ pre::-webkit-scrollbar-thumb:hover {
   display: flex; /* 使用 flexbox 以居中图标 */
   align-items: center; /* 垂直居中 */
   justify-content: center; /* 水平居中 */
-  background-color: #1890ff; /* 可选：设置背景颜色 */
-  color: white; /* 可选：设置字体颜色 */
+  background-color: var(--accent-color, #1890ff); /* 可选：设置背景颜色 */
+  color: #ffffff; /* 可选：设置字体颜色 */
   border: none; /* 去除边框 */
   cursor: pointer; /* 鼠标悬停时显示为指针 */
 }
@@ -158,7 +169,7 @@ pre::-webkit-scrollbar-thumb:hover {
   width: 120px;
   padding: 8px;
   border-radius: 4px;
-  background: #f5f5f5;
+  background: var(--secondary-bg);
   margin-bottom: 8px;
 }
 
@@ -174,8 +185,8 @@ pre::-webkit-scrollbar-thumb:hover {
   right: -6px;
   border-radius: 50%;
   padding: 4px;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: var(--bg-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .guest-image {
@@ -205,15 +216,19 @@ pre::-webkit-scrollbar-thumb:hover {
 .loading-spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #1890ff;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--accent-color, #1890ff);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .guest-message {
