@@ -49,6 +49,7 @@ const ChatLLM = () => {
   >(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(false); // 新增状态管理侧边栏折叠
+  const [isFloating, setIsFloating] = useState(false); // 新增状态管理侧边栏悬浮
 
   const handleStop = () => {
     if (abortController) {
@@ -314,6 +315,7 @@ const ChatLLM = () => {
         setCollapsed(false);
       } else {
         setCollapsed(true);
+        setIsFloating(false); // 取消悬浮状态
       }
     };
 
@@ -325,12 +327,24 @@ const ChatLLM = () => {
     };
   }, []);
 
+  const handleToggleSidebar = () => {
+    setCollapsed(!collapsed);
+    setIsFloating(!isFloating); // 切换悬浮状态
+  };
+
   return (
     <Layout style={{ height: '100vh' }}>
       <Sider
         width={300}
         collapsed={collapsed}
-        style={{ background: '#212121' }}
+        style={{
+          background: '#212121',
+          position: isFloating ? 'fixed' : 'relative', // 悬浮时使用 fixed
+          left: isFloating ? 0 : 'auto', // 悬浮时靠左显示
+          top: 0, // 悬浮时从顶部开始
+          height: '100vh', // 确保侧边栏高度为视口高度
+          zIndex: isFloating ? 1000 : 'auto', // 悬浮时设置更高的 z-index
+        }}
       >
         <div
           className="sidebar-header"
@@ -346,7 +360,7 @@ const ChatLLM = () => {
             </h2>
           )}
           <BarsOutlined
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={handleToggleSidebar}
             style={{
               cursor: 'pointer',
               fontSize: '25px',
