@@ -22,28 +22,28 @@ function App() {
         root.style.setProperty('--text-color', '#e9ecef');
         root.style.setProperty('--secondary-bg', '#2c2e33');
         root.style.setProperty('--border-color', '#373a40');
-        root.style.setProperty('--accent-color', '#4dabf7');
+        root.style.setProperty('--accent-color', '#BFCAD6');
         root.style.setProperty('--hover-color', '#373a40');
         root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
         root.style.setProperty('--input-bg', '#2c2e33');
         root.style.setProperty('--secondary-text', '#a1a1aa');
-        root.style.setProperty('--button-bg', '#4dabf7');
+        root.style.setProperty('--button-bg', '#BFCAD6');
         root.style.setProperty('--button-text', '#ffffff');
-        root.style.setProperty('--button-hover', '#3994e4');
+        root.style.setProperty('--button-hover', '#AAB5C1');
         root.style.setProperty('--message-bg', '#2c2e33');
       } else {
         root.style.setProperty('--bg-color', '#ffffff');
         root.style.setProperty('--text-color', '#333333');
         root.style.setProperty('--secondary-bg', '#f5f5f5');
         root.style.setProperty('--border-color', '#e0e0e0');
-        root.style.setProperty('--accent-color', '#1890ff');
+        root.style.setProperty('--accent-color', '#BFCAD6');
         root.style.setProperty('--hover-color', '#e6e6e6');
         root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.1)');
         root.style.setProperty('--input-bg', '#ffffff');
         root.style.setProperty('--secondary-text', '#666666');
-        root.style.setProperty('--button-bg', '#1890ff');
+        root.style.setProperty('--button-bg', '#BFCAD6');
         root.style.setProperty('--button-text', '#ffffff');
-        root.style.setProperty('--button-hover', '#40a9ff');
+        root.style.setProperty('--button-hover', '#AAB5C1');
         root.style.setProperty('--message-bg', '#ffffff');
       }
 
@@ -82,7 +82,6 @@ function App() {
         type="button"
         aria-label="切换深浅色模式"
       >
-        {/* 在当前是暗色模式时显示月亮，在当前是亮色模式时显示太阳 */}
         {isDark ? '🌙' : '☀️'}
       </button>
       <ChatLLM />

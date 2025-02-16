@@ -21,36 +21,42 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 
   return (
     <div style={{ position: 'relative' }}>
-      <button 
+      <button
         onClick={handleCopy}
-        style={{ 
-          position: 'absolute', 
-          right: '10px', 
-          top: '10px', 
-          background: 'none', 
-          border: 'none', 
-          cursor: 'pointer', 
-          color: '#ffff',
-          borderRadius: '5px', // 圆角矩形
-          padding: '5px 10px', // 添加内边距
-          backgroundColor: 'rgba(255, 255, 255, 0.2)', // 背景颜色
+        style={{
+          position: 'absolute',
+          right: '10px',
+          top: '10px',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          color: 'var(--button-text)',
+          borderRadius: '5px',
+          padding: '5px 10px',
+          backgroundColor: 'var(--button-bg)',
         }}
       >
         {copyMessage || 'Copy'}
       </button>
-      <pre style={{ 
-        backgroundColor: '#1E1E1E',
-        padding: '1em',
-        borderRadius: '6px',
-        overflow: 'auto'
-      }}>
-        <code 
+      <pre
+        style={{
+          backgroundColor: '#1E1E1E',
+          padding: '1em',
+          borderRadius: '6px',
+          overflow: 'auto',
+        }}
+      >
+        <code
           dangerouslySetInnerHTML={{ __html: highlighted }}
-          style={{ fontFamily: 'Consolas, Monaco, monospace', backgroundColor: 'black', color: '#fff' }}
+          style={{
+            fontFamily: 'Consolas, Monaco, monospace',
+            backgroundColor: 'black',
+            color: '#fff',
+          }}
         />
       </pre>
     </div>
   );
 };
 
-export default CodeBlock; 
+export default CodeBlock;

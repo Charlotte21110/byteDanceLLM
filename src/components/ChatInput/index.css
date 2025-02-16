@@ -19,7 +19,7 @@
   max-height: 30vh;
   height: auto;
   resize: none;
-  outline: none;
+  outline: none !important;
   margin-bottom: 2vh;
   font-size: 16px;
   font-weight: 600;
@@ -28,6 +28,12 @@
 .chat-input-search::placeholder {
   color: var(--secondary-text);
   opacity: 1;
+}
+
+.chat-input-search:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .chat-input-button {
@@ -42,9 +48,9 @@
 }
 
 .chat-input button {
-  background-color: var(--accent-color);
-  color: #ffffff;
-  border: none;
+  background-color: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border: none !important;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -53,10 +59,16 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  outline: none !important;
+}
+
+.chat-input button:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .chat-input button:hover {
-  background-color: var(--accent-color);
+  background-color: var(--button-hover) !important;
   opacity: 0.9;
 }
 
