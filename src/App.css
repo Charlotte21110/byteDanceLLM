@@ -4,14 +4,14 @@
   --text-color: #212529;
   --secondary-bg: #e9ecef;
   --border-color: #dee2e6;
-  --accent-color: #0d6efd;
+  --accent-color: transparent;
   --hover-color: #d1d1d1;
   --shadow-color: rgba(0, 0, 0, 0.1);
   --input-bg: #ffffff;
   --secondary-text: #6c757d;
-  --button-bg: #0d6efd;
-  --button-text: #ffffff;
-  --button-hover: #0b5ed7;
+  --button-bg: transparent;
+  --button-text: #212529;
+  --button-hover: transparent;
   --sidebar-bg: #e9ecef;
   --sidebar-text: #212529;
   --sidebar-border: #dee2e6;
@@ -24,14 +24,14 @@
   --text-color: #e9ecef;
   --secondary-bg: #2c2e33;
   --border-color: #373a40;
-  --accent-color: #bfcad6;
+  --accent-color: transparent;
   --hover-color: #373a40;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --input-bg: #2c2e33;
   --secondary-text: #a1a1aa;
-  --button-bg: #bfcad6;
+  --button-bg: transparent;
   --button-text: #ffffff;
-  --button-hover: #aab5c1;
+  --button-hover: transparent;
   --sidebar-bg: #212121;
   --sidebar-text: #ffffff;
   --sidebar-border: #373a40;
@@ -60,7 +60,7 @@ body {
   height: 42px;
   padding: 0;
   font-size: 1.25rem;
-  background-color: var(--button-bg);
+  background-color: transparent !important;
   border: 1px solid var(--border-color);
   border-radius: 50%;
   cursor: pointer;
@@ -70,17 +70,22 @@ body {
   justify-content: center;
   box-shadow: 0 2px 8px var(--shadow-color);
   z-index: 1000;
-  color: var(--button-text);
+  color: var(--text-color);
 }
 
 .theme-toggle:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 12px var(--shadow-color);
-  background-color: var(--button-hover);
+  background-color: transparent !important;
 }
 
 .theme-toggle:active {
   transform: scale(0.95);
+}
+
+.theme-toggle svg {
+  fill: transparent !important;
+  stroke: var(--text-color);
 }
 
 /* 聊天界面样式 */

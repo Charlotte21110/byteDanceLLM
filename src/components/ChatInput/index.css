@@ -48,8 +48,8 @@
 }
 
 .chat-input button {
-  background-color: var(--button-bg) !important;
-  color: var(--button-text) !important;
+  background-color: transparent !important;
+  color: #bfcad6 !important;
   border: none !important;
   width: 30px;
   height: 30px;
@@ -68,8 +68,18 @@
 }
 
 .chat-input button:hover {
-  background-color: var(--button-hover) !important;
+  background-color: transparent !important;
   opacity: 0.9;
+}
+
+.chat-input button svg {
+  fill: #bfcad6 !important;
+  background-color: transparent !important;
+}
+
+.chat-input-button-right button svg {
+  fill: #bfcad6 !important;
+  background-color: transparent !important;
 }
 
 .image-preview {
