@@ -1,32 +1,31 @@
 /* Sidebar styles */
 .sidebar {
-  background: #212121; /* Sidebar background color */
+  background: var(--sidebar-bg);
   width: 300px; /* Sidebar width */
   /* 其他与 Sidebar 相关的样式 */
 }
 
 .sidebar-container {
   padding: 10px;
-  color: #fff;
+  color: var(--text-color);
 }
-.sidebar-header{
+.sidebar-header {
   margin-top: 20px;
   margin-right: 20px;
-  
 }
-.sidebar-h{
+.sidebar-h {
   margin: 20px;
-
 }
 
 .history-item {
   margin: 10px;
   cursor: pointer;
-  border-radius: 5px; 
+  border-radius: 5px;
   padding: 5px;
   display: flex; /* 添加 flex 布局 */
   justify-content: space-between; /* 内容和图标之间的间距 */
   align-items: center; /* 垂直居中对齐 */
+  color: var(--text-color);
 }
 
 .user-input {
@@ -35,16 +34,15 @@
 }
 
 .history-item:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* 添加悬停效果 */
+  background-color: var(--hover-color);
   border-radius: 10px;
 }
 
-.icon{
+.icon {
   font-size: 15px;
+  color: var(--text-color);
 }
 .icon:hover {
   font-size: 15px;
   color: #ff4d4f; /* 悬停时的颜色变化 */
 }
-
-

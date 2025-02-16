@@ -1,21 +1,21 @@
 /* 全局变量 - 亮色主题 */
 :root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --secondary-bg: #e6e6e6;
-  --border-color: #333333;
-  --accent-color: #1a365d;
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --secondary-bg: #e9ecef;
+  --border-color: #dee2e6;
+  --accent-color: #0d6efd;
   --hover-color: #d1d1d1;
-  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.1);
   --input-bg: #ffffff;
-  --secondary-text: #333333;
-  --button-bg: #1a365d;
+  --secondary-text: #6c757d;
+  --button-bg: #0d6efd;
   --button-text: #ffffff;
-  --button-hover: #2c4c7c;
-  --sidebar-bg: #f0f0f0;
-  --sidebar-text: #000000;
-  --sidebar-border: #333333;
-  --message-bg: #f5f5f5;
+  --button-hover: #0b5ed7;
+  --sidebar-bg: #e9ecef;
+  --sidebar-text: #212529;
+  --sidebar-border: #dee2e6;
+  --message-bg: #ffffff;
 }
 
 /* 全局变量 - 暗色主题 */

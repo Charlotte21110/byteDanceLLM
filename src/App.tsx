@@ -9,42 +9,46 @@ function App() {
   });
 
   useEffect(() => {
-    // 设置主题
     const setTheme = (dark: boolean) => {
-      // 设置 HTML 和 body 的 data-theme 属性
       document.documentElement.setAttribute(
         'data-theme',
         dark ? 'dark' : 'light'
       );
       document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
 
-      // 设置 CSS 变量
       const root = document.documentElement;
       if (dark) {
-        root.style.setProperty('--bg-color', '#1a1a1a');
-        root.style.setProperty('--text-color', '#ffffff');
-        root.style.setProperty('--secondary-bg', '#2d2d2d');
-        root.style.setProperty('--border-color', '#404040');
+        root.style.setProperty('--bg-color', '#1a1b1e');
+        root.style.setProperty('--text-color', '#e9ecef');
+        root.style.setProperty('--secondary-bg', '#2c2e33');
+        root.style.setProperty('--border-color', '#373a40');
+        root.style.setProperty('--accent-color', '#4dabf7');
+        root.style.setProperty('--hover-color', '#373a40');
+        root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
+        root.style.setProperty('--input-bg', '#2c2e33');
+        root.style.setProperty('--secondary-text', '#a1a1aa');
+        root.style.setProperty('--button-bg', '#4dabf7');
+        root.style.setProperty('--button-text', '#ffffff');
+        root.style.setProperty('--button-hover', '#3994e4');
+        root.style.setProperty('--message-bg', '#2c2e33');
       } else {
         root.style.setProperty('--bg-color', '#ffffff');
         root.style.setProperty('--text-color', '#333333');
         root.style.setProperty('--secondary-bg', '#f5f5f5');
         root.style.setProperty('--border-color', '#e0e0e0');
+        root.style.setProperty('--accent-color', '#1890ff');
+        root.style.setProperty('--hover-color', '#e6e6e6');
+        root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.1)');
+        root.style.setProperty('--input-bg', '#ffffff');
+        root.style.setProperty('--secondary-text', '#666666');
+        root.style.setProperty('--button-bg', '#1890ff');
+        root.style.setProperty('--button-text', '#ffffff');
+        root.style.setProperty('--button-hover', '#40a9ff');
+        root.style.setProperty('--message-bg', '#ffffff');
       }
 
-      // 设置类名
       document.body.className = dark ? 'dark-theme' : 'light-theme';
-
-      // 保存设置
       localStorage.setItem('theme', dark ? 'dark' : 'light');
-
-      // 强制更新所有元素的背景色和文字颜色
-      const elements = document.querySelectorAll('*');
-      elements.forEach((el) => {
-        const element = el as HTMLElement;
-        element.style.transition =
-          'background-color 0.3s ease, color 0.3s ease';
-      });
     };
 
     setTheme(isDark);

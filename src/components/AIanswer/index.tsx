@@ -1,5 +1,5 @@
 import React from 'react';
-import "./index.css";
+import './index.css';
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './CodeBlock';
 
@@ -19,28 +19,35 @@ const AIanswer = (props: AIanswerProps) => {
   return (
     <div className="chat-ai">
       <div className="chat-ai-avator">
-        <i
-          className="iconfont icon-gpt"
-          style={{ fontSize: "24px", color: "#fff" }}
-        ></i>
+        <i className="iconfont icon-gpt" style={{ fontSize: '24px' }}></i>
       </div>
       <div className="chat-ai-answer">
         <ReactMarkdown
           components={{
             code: ({ inline, className, children }: CodeProps) => {
               if (inline) {
-                return <code className="chat-code" style={{ 
-                  backgroundColor: '#f0f0f0', 
-                  padding: '0.2em 0.4em',
-                  borderRadius: '3px',
-                  fontSize: '85%',
-                }}>{children}</code>;
+                return (
+                  <code
+                    className="chat-code"
+                    style={{
+                      backgroundColor: 'var(--secondary-bg)',
+                      padding: '0.2em 0.4em',
+                      borderRadius: '3px',
+                      fontSize: '85%',
+                      color: 'var(--text-color)',
+                    }}
+                  >
+                    {children}
+                  </code>
+                );
               }
-              const language = className ? className.replace('language-', '') : '';
+              const language = className
+                ? className.replace('language-', '')
+                : '';
               return (
-                <CodeBlock 
-                  language={language} 
-                  value={String(children).replace(/\n$/, '')} 
+                <CodeBlock
+                  language={language}
+                  value={String(children).replace(/\n$/, '')}
                 />
               );
             },
