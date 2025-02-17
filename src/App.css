@@ -361,3 +361,89 @@ code {
   margin: 0 !important;
   font-size: 85% !important;
 }
+
+/* 响应式布局 */
+@media screen and (max-width: 768px) {
+  .chat-ai {
+    gap: 12px;
+    margin: 16px 0;
+    padding: 0 12px;
+  }
+
+  .chat-ai-avator {
+    width: 28px;
+    height: 28px;
+    margin-top: 4px;
+  }
+
+  .chat-ai-answer {
+    padding: 16px !important;
+    max-width: calc(100% - 44px);
+    font-size: 14px !important;
+  }
+
+  .chat-main {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .chat-input {
+    margin: 10px;
+    padding: 12px;
+  }
+
+  .chat-input-search {
+    font-size: 14px !important;
+  }
+
+  pre {
+    padding: 12px !important;
+    margin: 6px 0 !important;
+    font-size: 12px !important;
+  }
+
+  code {
+    font-size: 12px !important;
+  }
+
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* 小屏幕手机 */
+@media screen and (max-width: 480px) {
+  .chat-ai {
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .chat-ai-avator {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chat-ai-answer {
+    padding: 12px !important;
+    max-width: calc(100% - 36px);
+    font-size: 13px !important;
+  }
+
+  .chat-input {
+    margin: 8px;
+    padding: 10px;
+  }
+
+  pre {
+    padding: 10px !important;
+    font-size: 11px !important;
+  }
+
+  .theme-toggle {
+    width: 32px;
+    height: 32px;
+  }
+}
