@@ -7,7 +7,6 @@ import {
   CloseOutlined,
   StopOutlined,
 } from '@ant-design/icons';
-import './index.css';
 
 interface ChatInputProps {
   searchValue: string;
@@ -35,17 +34,56 @@ const ChatInput: React.FC<ChatInputProps> = ({
   handleStop,
 }) => {
   return (
-    <div className="chat-input">
+    <div
+      style={{
+        border: '2px solid var(--border-color)',
+        borderRadius: '10px',
+        padding: '10px',
+        position: 'relative',
+        marginBottom: '3vh',
+        height: 'auto',
+        maxHeight: '30vh',
+        backgroundColor: 'var(--input-bg)',
+        boxShadow: '0 2px 4px var(--shadow-color)',
+      }}
+    >
       {previewImage && (
-        <div className="image-preview">
+        <div
+          style={{
+            position: 'relative',
+            width: '120px',
+            padding: '8px',
+            borderRadius: '4px',
+            background: 'var(--secondary-bg)',
+            marginBottom: '8px',
+            border: '2px solid var(--border-color)',
+          }}
+        >
           <img
             src={previewImage}
             alt="preview"
             style={{ opacity: isUploading ? 0.6 : 1 }}
           />
           {isUploading && (
-            <div className="upload-loading">
-              <div className="loading-spinner"></div>
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 1,
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  border: '2px solid var(--border-color)',
+                  borderTop: '2px solid var(--accent-color)',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                }}
+              ></div>
             </div>
           )}
           <Button
@@ -53,6 +91,15 @@ const ChatInput: React.FC<ChatInputProps> = ({
             icon={<CloseOutlined />}
             size="small"
             onClick={clearImage}
+            style={{
+              position: 'absolute',
+              top: '-6px',
+              right: '-6px',
+              borderRadius: '50%',
+              padding: '4px',
+              background: 'var(--bg-color)',
+              boxShadow: '0 2px 4px var(--shadow-color)',
+            }}
           />
         </div>
       )}
@@ -74,16 +121,46 @@ const ChatInput: React.FC<ChatInputProps> = ({
         }}
         className="chat-input-search"
         rows={3}
+        style={{
+          color: 'var(--text-color)',
+          backgroundColor: 'var(--input-bg)',
+          border: 'none',
+          width: '100%',
+          maxHeight: '30vh',
+          height: 'auto',
+          resize: 'none',
+          outline: 'none !important',
+          marginBottom: '2vh',
+          fontSize: '16px',
+          fontWeight: 600,
+        }}
       />
       <div className="chat-input-button">
         <div className="chat-input-button-left">
-          <Button onClick={onNewConversation}>
+          <Button
+            onClick={onNewConversation}
+            style={{ background: 'none', border: 'none', padding: 0 }}
+          >
             <MessageOutlined />
           </Button>
         </div>
         <div className="chat-input-button-right">
           <Button
             onClick={() => document.getElementById('file-input')?.click()}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              color: '#bfcad6 !important',
+              width: '30px',
+              height: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              outline: 'none !important',
+            }}
           >
             <PictureOutlined />
           </Button>
@@ -94,7 +171,10 @@ const ChatInput: React.FC<ChatInputProps> = ({
             style={{ display: 'none' }}
             id="file-input"
           />
-          <Button onClick={() => onSearch(searchValue)}>
+          <Button
+            onClick={() => onSearch(searchValue)}
+            style={{ background: 'none', border: 'none', padding: 0 }}
+          >
             <ArrowUpOutlined />
           </Button>
         </div>

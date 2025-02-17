@@ -232,14 +232,14 @@ textarea:focus {
 
 /* 按钮样式 */
 button {
-  background-color: var(--button-bg) !important;
+  background-color: transparent !important;
   color: var(--button-text) !important;
   border: none !important;
   font-weight: 600 !important;
 }
 
 button:hover {
-  background-color: var(--button-hover) !important;
+  background-color: transparent !important;
   opacity: 0.9;
 }
 
@@ -280,6 +280,7 @@ button:hover {
 .anticon {
   color: var(--button-text) !important;
   font-size: 18px !important;
+  background: none !important;
 }
 
 /* 时间和复制按钮样式 */
