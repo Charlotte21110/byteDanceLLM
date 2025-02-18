@@ -62,7 +62,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
           <img
             src={previewImage}
             alt="preview"
-            style={{ opacity: isUploading ? 0.6 : 1 }}
+            style={{
+              opacity: isUploading ? 0.6 : 1,
+              maxWidth: '100px',
+              maxHeight: '100px',
+              objectFit: 'contain',
+            }}
           />
           {isUploading && (
             <div
@@ -87,7 +92,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
             </div>
           )}
           <Button
-            className="clear-image"
             icon={<CloseOutlined />}
             size="small"
             onClick={clearImage}
@@ -108,7 +112,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
         value={searchValue}
         onChange={(e) => {
           onSearchValueChange(e.target.value);
-          // 调整 textarea 高度
           const textarea = e.target;
           textarea.style.height = 'auto';
           textarea.style.height = `${Math.min(textarea.scrollHeight, (15 * window.innerHeight) / 100)}px`;
@@ -119,7 +122,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
             onSearch(searchValue);
           }
         }}
-        className="chat-input-search"
         rows={3}
         style={{
           color: 'var(--text-color)',
@@ -129,14 +131,20 @@ const ChatInput: React.FC<ChatInputProps> = ({
           maxHeight: '30vh',
           height: 'auto',
           resize: 'none',
-          outline: 'none !important',
+          outline: 'none',
           marginBottom: '2vh',
           fontSize: '16px',
           fontWeight: 600,
+          padding: '8px',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.outline = 'none';
+          e.currentTarget.style.border = 'none';
+          e.currentTarget.style.boxShadow = 'none';
         }}
       />
-      <div className="chat-input-button">
-        <div className="chat-input-button-left">
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
           <Button
             onClick={onNewConversation}
             style={{ background: 'none', border: 'none', padding: 0 }}
@@ -144,14 +152,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
             <MessageOutlined />
           </Button>
         </div>
-        <div className="chat-input-button-right">
+        <div
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}
+        >
           <Button
             onClick={() => document.getElementById('file-input')?.click()}
             style={{
               background: 'none',
               border: 'none',
               padding: 0,
-              color: '#bfcad6 !important',
+              color: '#bfcad6',
               width: '30px',
               height: '30px',
               display: 'flex',
@@ -159,7 +169,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
               justifyContent: 'center',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              outline: 'none !important',
+              outline: 'none',
             }}
           >
             <PictureOutlined />
@@ -171,19 +181,23 @@ const ChatInput: React.FC<ChatInputProps> = ({
             style={{ display: 'none' }}
             id="file-input"
           />
-          <Button
-            onClick={() => onSearch(searchValue)}
-            style={{ background: 'none', border: 'none', padding: 0 }}
-          >
-            <ArrowUpOutlined />
-          </Button>
+          {isResponding ? (
+            <Button
+              onClick={handleStop}
+              style={{ background: 'none', border: 'none', padding: 0 }}
+            >
+              <StopOutlined />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => onSearch(searchValue)}
+              style={{ background: 'none', border: 'none', padding: 0 }}
+            >
+              <ArrowUpOutlined />
+            </Button>
+          )}
         </div>
       </div>
-      {isResponding && (
-        <Button className="stop-button" onClick={handleStop}>
-          <StopOutlined />
-        </Button>
-      )}
     </div>
   );
 };
