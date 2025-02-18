@@ -128,4 +128,37 @@
   }
 }
 
+.file-input-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #bfcad6;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.new-conversation-button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.stop-button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
 /* 其他相关样式... */
