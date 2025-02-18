@@ -332,44 +332,57 @@ const ChatLLM = () => {
     setIsFloating(!isFloating); // 切换悬浮状态
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.querySelector('.sidebar-container');
+      if (isFloating && sidebar && !sidebar.contains(event.target as Node)) {
+        setCollapsed(true);
+        setIsFloating(false); // 取消悬浮状态
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isFloating]);
+
   return (
     <Layout style={{ height: '100vh' }}>
-      <Sider
-        width={300}
-        collapsed={collapsed}
-        style={{
-          background: '#212121',
-          position: isFloating ? 'fixed' : 'relative', // 悬浮时使用 fixed
-          left: isFloating ? 0 : 'auto', // 悬浮时靠左显示
-          top: 0, // 悬浮时从顶部开始
-          height: '100vh', // 确保侧边栏高度为视口高度
-          zIndex: isFloating ? 1000 : 'auto', // 悬浮时设置更高的 z-index
-        }}
-      >
-        <div
-          className="sidebar-header"
+      {!collapsed && ( // 仅在未折叠时渲染 Sider
+        <Sider
+          width={300}
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            background: '#212121',
+            position: isFloating ? 'fixed' : 'relative',
+            left: isFloating ? 0 : 'auto',
+            top: 0,
+            height: '100vh',
+            zIndex: isFloating ? 1000 : 'auto',
+            transition: 'width 0.3s',
           }}
         >
-          {!collapsed && ( // 仅在未折叠时显示标题
+          <div
+            className="sidebar-header"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px' }}>
               琪露诺的智能提问机
             </h2>
-          )}
-          <BarsOutlined
-            onClick={handleToggleSidebar}
-            style={{
-              cursor: 'pointer',
-              fontSize: '25px',
-              color: '#fff',
-              marginLeft: '25px',
-            }}
-          />
-        </div>
-        {!collapsed && ( // 仅在未折叠时显示 sidebar-container
+            <BarsOutlined
+              onClick={handleToggleSidebar}
+              style={{
+                cursor: 'pointer',
+                fontSize: '25px',
+                color: '#fff',
+                marginLeft: '25px',
+              }}
+            />
+          </div>
           <div className="sidebar-container">
             <HistorySidebar
               history={history}
@@ -378,8 +391,22 @@ const ChatLLM = () => {
               updateHistory={updateHistory}
             />
           </div>
-        )}
-      </Sider>
+        </Sider>
+      )}
+      {collapsed && ( // 新增悬浮的 BarsOutlined 图标
+        <BarsOutlined
+          onClick={handleToggleSidebar}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '20px',
+            fontSize: '25px',
+            color: '#fff',
+            zIndex: 1000,
+            cursor: 'pointer',
+          }}
+        />
+      )}
       <Layout>
         <Content>
           <div className="chat-body">
