@@ -21,13 +21,16 @@
     "commitlint": "commitlint --edit",
     "commit": "git-cz"
   },
+  "homepage": "https://Charlotte21110.github.io/byteDanceLLM",
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
       "eslint --fix",
-      "prettier --write"
+      "git add"
     ],
     "src/**/*.{css,scss}": [
-      "prettier --write"
+      "prettier --write",
+      "git add"
     ]
   },
   "config": {

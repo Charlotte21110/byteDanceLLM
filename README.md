@@ -1,5 +1,8 @@
 # 项目简介
- 一个AI对话，基于coze-api的LLM组件，支持流式输出，支持图片、视频、音频、文件等类型消息的传输，记录历史对话，使用stream-chat-react作为聊天组件，使用时需要自行配置bot ID与api key，后台官网https://api.coze.com，调整于.env文件中
+ 一个基于coze-api的AI对话LLM组件，支持流式输出，支持图片、视频、音频、文件等类型消息的传输，记录历史对话
+ 使用时需要自行配置bot ID与api key，调整于根目录.env文件中
+ 后台官网https://api.coze.com
+ 在线预览：https://charlotte21110.github.io/byteDanceLLM/
  
 # node版本
 node 18.18.0

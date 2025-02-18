@@ -10,4 +10,12 @@ module.exports = {
     { value: 'chore', name: 'chore:    其他修改' },
     { value: 'revert', name: 'revert:   回滚' }
   ],
+  scopes: [
+    { name: 'component' }, // 组件
+    { name: 'utils' }, // 工具类
+    { name: 'config' }, // 配置
+    { name: 'other' }, // 其他
+  ],
+  allowCustomScopes: true, // 允许自定义 scope
+  allowEmptyScopes: true, // 允许空 scope
 };
