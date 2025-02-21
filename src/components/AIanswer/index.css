@@ -94,3 +94,29 @@
   transition: all 0.3s ease;
   border: 1px solid var(--border-color);
 }
+
+.copy-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent-color);
+  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: var(--button-bg);
+}
+
+.code-pre {
+  background-color: #1e1e1e;
+  padding: 1em;
+  border-radius: 6px;
+  overflow: auto;
+}
+
+.code-pre code {
+  font-family: Consolas, Monaco, monospace;
+  background-color: black;
+  color: #fff;
+}
