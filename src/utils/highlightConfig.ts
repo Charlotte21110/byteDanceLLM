@@ -1,7 +1,6 @@
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.css';
 
-// 注册所有你需要的语言
 const languages = [
   'javascript',
   'typescript',

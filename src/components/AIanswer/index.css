@@ -72,3 +72,25 @@
 .chat-ai-answer a {
   color: var(--accent-color);
 }
+
+.chat-ai-answer-suggestion-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+  margin-left: 10px;
+  flex-wrap: wrap;
+}
+
+.chat-ai-answer-suggestion-item {
+  width: fit-content;
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}

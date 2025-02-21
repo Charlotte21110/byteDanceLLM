@@ -178,8 +178,10 @@ const ChatLLM = () => {
     }
   };
   const handleCopy = (index: number, content: string) => {
+    // 过滤掉建议部分，只复制实际内容，抽象的做法（扶额）
+    const textContent = content.split(/\{"type":"suggestions".*?\}/)[0];
     navigator.clipboard
-      .writeText(content)
+      .writeText(textContent)
       .then(() => {
         setCombinedContents((prevContents) => {
           const newContents = [...prevContents];
@@ -434,6 +436,7 @@ const ChatLLM = () => {
                         <AIanswer
                           content={content.content}
                           duration={content.duration}
+                          onSuggestClick={(suggestion) => onSearch(suggestion)}
                         />
                         {content.duration !== undefined && (
                           <div
