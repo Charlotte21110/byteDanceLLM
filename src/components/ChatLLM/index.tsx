@@ -9,6 +9,8 @@ import { CheckOutlined, CopyOutlined, BarsOutlined } from '@ant-design/icons';
 import HistorySidebar from '../Sidebar';
 import { RoleType, ContentType } from '@coze/api';
 import ChatInput from '../ChatInput';
+import { RedoOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 
 const { Sider, Content } = Layout;
 
@@ -199,6 +201,81 @@ const ChatLLM = () => {
       .catch((err) => {
         console.error('Copy failed:', err);
       });
+  };
+
+  const onRetry = async (combinedIndex: number) => {
+    const conversationIndex = Math.floor(combinedIndex / 2);
+    if (!guestContents[conversationIndex]) {
+      console.error('找不到对应的用户消息');
+      return;
+    }
+    const contentToRetry = guestContents[conversationIndex].content;
+    let aiContent = '';
+
+    setAIContents((prevContents) => {
+      const newContents = [...prevContents];
+      if (newContents[conversationIndex]) {
+        newContents[conversationIndex] = {
+          ...newContents[conversationIndex],
+          content: '',
+        };
+      }
+      return newContents;
+    });
+
+    const controller = new AbortController();
+    setAbortController(controller);
+    setIsResponding(true);
+
+    // 重新记录回答开始时间
+    const startTime = Date.now();
+
+    const additionalMessages = combinedContents.map((content) => ({
+      role: content.type === 'guest' ? RoleType.User : RoleType.Assistant,
+      content: content.content,
+      content_type: content.fileId
+        ? ('object_string' as ContentType)
+        : ('text' as ContentType),
+    }));
+
+    try {
+      await fetchAIResponse(
+        contentToRetry,
+        additionalMessages,
+        (data: string) => {
+          aiContent += data;
+          setAIContents((prevContents) => {
+            const newContents = [...prevContents];
+            if (newContents[conversationIndex]) {
+              newContents[conversationIndex] = {
+                ...newContents[conversationIndex],
+                content: aiContent,
+              };
+            }
+            return newContents;
+          });
+        },
+        'text',
+        controller.signal
+      );
+    } finally {
+      setIsResponding(false);
+      setAbortController(null);
+
+      // 计算回答时间并更新 duration
+      const answerDuration = Date.now() - startTime;
+      setAIContents((prevContents) => {
+        const newContents = [...prevContents];
+        if (newContents.length > conversationIndex) {
+          newContents[conversationIndex] = {
+            ...newContents[conversationIndex],
+            duration: answerDuration,
+            isCopied: false,
+          };
+        }
+        return newContents;
+      });
+    }
   };
 
   const clearImage = () => {
@@ -449,6 +526,16 @@ const ChatLLM = () => {
                               marginRight: '15px',
                             }}
                           >
+                            <Tooltip title="重新回答">
+                              <RedoOutlined
+                                onClick={() => onRetry(index)}
+                                style={{
+                                  fontSize: '16px',
+                                  cursor: 'pointer',
+                                  marginRight: '8px',
+                                }}
+                              />
+                            </Tooltip>
                             <CheckOutlined />
                             <span
                               style={{ marginLeft: '4px', marginRight: '16px' }}
