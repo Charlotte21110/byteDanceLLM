@@ -1,7 +1,12 @@
 # 项目简介
- 一个基于coze-api的AI对话LLM组件，支持流式输出，支持图片、视频、音频、文件等类型消息的传输，记录历史对话
+ 一个基于coze-api的AI对话LLM组件
+ 👏🏻支持流式输出ai对话并展示markdown格式
+ ✍🏻支持图片、视频、音频、文件等类型消息的传输
+ ⭐️记录历史对话折叠框
+ ✨切换黑白主题
+ 🧉支持H5端适配
  使用时需要自行配置bot ID与api key，调整于根目录.env文件中
- 后台官网https://api.coze.com
+ 后台官网：https://api.coze.com
  在线预览：https://charlotte21110.github.io/byteDanceLLM/
  
 # node版本
@@ -46,3 +51,5 @@ git add xxx.js // 示例添加文件
 pnpm commit // 提交
 git push origin develop // 推送到远程
 ```
+# 界面预览
+![显示界面](./src/assets/picture_white.png)
